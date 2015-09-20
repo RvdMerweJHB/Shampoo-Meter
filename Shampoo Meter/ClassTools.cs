@@ -11,13 +11,6 @@ namespace Shampoo_Meter
 {
     class ClassTools
     {
-        public DataTable GetData()
-        {
-            DataTable _MyTable = new DataTable();
-
-            return _MyTable;
-        }
-
         #region MoveFiles
         //THE SUCCESS OF THESE METHODS DEPEND ENTIRELY ON THE FACT THAT THE .dat FILE ARE IN SEQUENCE.
         //THEY HAVE TO BE IN ORDER OF DATE ACSENDING (OLD TO NEW)
