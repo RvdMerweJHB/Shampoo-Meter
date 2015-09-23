@@ -117,12 +117,20 @@ namespace Shampoo_Meter
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
-            DAL.ClassSQLAccess.CreateCMFile("apnm.bonitasmarketing.co.za", Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+            DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            DataTable apnClients = new DataTable();
+            apnClients = DAL.ClassSQLAccess.GetDataTable();
+            cmbApnClients.DataSource = apnClients;
+
+            //foreach (DataRow dr in apnClients.Rows)
+            //{
+            //    cmbApnClients.Items.Add(dr["Customer_Name"]);
+            //}
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

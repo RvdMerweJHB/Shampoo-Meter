@@ -12,14 +12,31 @@ namespace Shampoo_Meter.DAL
 {
     class ClassSQLAccess
     {
-        public DataTable GetDataTable()
+        public static DataTable GetDataTable()
         {
             DataTable resultTable = new DataTable();
 
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
+         
             sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
-            string sqlQuery = string.Empty;
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("SELECT ");
+            sqlQuery.AppendLine("	[Customer_Name]");
+            sqlQuery.AppendLine("   [APN_Name]");
+            sqlQuery.AppendLine("FROM");
+            sqlQuery.AppendLine("	[APN_DATA].[dbo].[MTN_APN_Name]");
+
+            sqlCommand.CommandText = sqlQuery.ToString();
+            sqlConnection.Open();
+            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            {
+                sqlAdaptor.Fill(resultTable);
+            }
+            sqlConnection.Close();
 
             return resultTable;
         }
