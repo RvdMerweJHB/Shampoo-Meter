@@ -25,7 +25,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("USE [APN_DATA]");
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("SELECT ");
-            sqlQuery.AppendLine("	[Customer_Name]");
+            sqlQuery.AppendLine("	[Customer_Name],");
             sqlQuery.AppendLine("   [APN_Name]");
             sqlQuery.AppendLine("FROM");
             sqlQuery.AppendLine("	[APN_DATA].[dbo].[MTN_APN_Name]");
@@ -173,7 +173,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 11] AS 'Call_Sequence',");
             sqlQuery.AppendLine("           [Column 12] AS 'Called_Number',");
             sqlQuery.AppendLine("           [Column 13] AS 'Target_Network',");
-            sqlQuery.AppendLine("           [Column 14] AS 'Filler_1',");
+            sqlQuery.AppendLine("--         [Column 14] AS 'Filler_1',");
             sqlQuery.AppendLine("           [Column 15] AS 'GEO_Source',");
             sqlQuery.AppendLine("           [Column 16] AS 'GEO_Destination',");
             sqlQuery.AppendLine("           [Column 17] AS 'Call_Cost',");
@@ -189,7 +189,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 27] AS 'TAP_MOC_Surcharge',");
             sqlQuery.AppendLine("           [Column 28] AS 'GSM_Code',");
             sqlQuery.AppendLine("           [Column 29] AS 'Distance_Related',");
-            sqlQuery.AppendLine("           [Column 30] AS 'Filler_2',");
+            sqlQuery.AppendLine("--         [Column 30] AS 'Filler_2',");
             sqlQuery.AppendLine("           [Column 31] AS 'Price_Plan',");
             sqlQuery.AppendLine("           [Column 32] AS 'IMEI',");
             sqlQuery.AppendLine("           [Column 33] AS 'VAS_Description',");
@@ -197,6 +197,10 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 35] AS 'Information_Flag',");
             sqlQuery.AppendLine("           [Column 36] AS 'VPN_Short_Dial',");
             sqlQuery.AppendLine("           [Column 37] AS 'VAS_Partner_Id'");
+            sqlQuery.AppendLine("           [Column 38] AS 'VAS_Content_Id',");
+            sqlQuery.AppendLine("           [Column 39] AS 'VAS_Content_TO_Id'--,");
+            sqlQuery.AppendLine("--		    [Column 40] AS 'Filler_3',");
+            sqlQuery.AppendLine("--		    [Column 41] AS 'End_Marker'");
             sqlQuery.AppendLine("	FROM");
             sqlQuery.AppendLine("   		dbo.[" + tableName + "]");
 

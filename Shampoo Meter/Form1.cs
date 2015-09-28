@@ -102,7 +102,8 @@ namespace Shampoo_Meter
                 {
                     int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString());
                     successfullImports++;
-                } catch (Exception ex)
+                } 
+                catch
                 {
                     MessageBox.Show("Error importing Row:" + dr[1].ToString());
                 }
@@ -117,25 +118,16 @@ namespace Shampoo_Meter
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
-            DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+            DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString() , Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             DataTable apnClients = new DataTable();
             apnClients = DAL.ClassSQLAccess.GetDataTable();
             cmbApnClients.DataSource = apnClients;
-
-            //foreach (DataRow dr in apnClients.Rows)
-            //{
-            //    cmbApnClients.Items.Add(dr["Customer_Name"]);
-            //}
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
+            cmbApnClients.ValueMember = "APN_Name";
+            cmbApnClients.DisplayMember = "Customer_Name";
         }
     }
 }

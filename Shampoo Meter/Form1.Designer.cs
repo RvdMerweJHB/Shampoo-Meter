@@ -101,9 +101,9 @@
             // 
             // btnCreateCMFile
             // 
-            this.btnCreateCMFile.Location = new System.Drawing.Point(235, 280);
+            this.btnCreateCMFile.Location = new System.Drawing.Point(224, 298);
             this.btnCreateCMFile.Name = "btnCreateCMFile";
-            this.btnCreateCMFile.Size = new System.Drawing.Size(75, 23);
+            this.btnCreateCMFile.Size = new System.Drawing.Size(151, 23);
             this.btnCreateCMFile.TabIndex = 6;
             this.btnCreateCMFile.Text = "Create CM File";
             this.btnCreateCMFile.UseVisualStyleBackColor = true;
@@ -123,7 +123,6 @@
             this.txtBeginID.Name = "txtBeginID";
             this.txtBeginID.Size = new System.Drawing.Size(100, 20);
             this.txtBeginID.TabIndex = 8;
-            this.txtBeginID.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // txtEndID
             // 

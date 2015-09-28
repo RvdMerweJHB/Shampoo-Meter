@@ -15,7 +15,7 @@ namespace Shampoo_Meter.Classes
         //2. Then save in to temp location, and hand location to be used in the ImportDatafile Method.
         //3. Execute ssis package
         //4. delete ssis package from temp location.
-        //5. Indicate to user htat package has comleted successfully, thus data in DB.
+        //5. Indicate to user that package has comleted successfully, thus data in DB.
 
         private string UpdateTemplate(ClassDataFile file)
         {
