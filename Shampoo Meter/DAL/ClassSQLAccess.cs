@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using Shampoo_Meter.Classes;
+using System.IO;
 
 namespace Shampoo_Meter.DAL
 {
@@ -196,7 +197,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 34] AS 'GPRS_Used',");
             sqlQuery.AppendLine("           [Column 35] AS 'Information_Flag',");
             sqlQuery.AppendLine("           [Column 36] AS 'VPN_Short_Dial',");
-            sqlQuery.AppendLine("           [Column 37] AS 'VAS_Partner_Id'");
+            sqlQuery.AppendLine("           [Column 37] AS 'VAS_Partner_Id',");
             sqlQuery.AppendLine("           [Column 38] AS 'VAS_Content_Id',");
             sqlQuery.AppendLine("           [Column 39] AS 'VAS_Content_TO_Id'--,");
             sqlQuery.AppendLine("--		    [Column 40] AS 'Filler_3',");
@@ -211,12 +212,31 @@ namespace Shampoo_Meter.DAL
         {
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
+            DataTable pTable = new DataTable();
 
             sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
             sqlCommand.Connection = sqlConnection;
 
             sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
             sqlConnection.Open();
+            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            {
+                sqlAdaptor.Fill(pTable);
+            }
+
+            sqlConnection.Close();
+
+            using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
+            {
+                foreach (DataRow CDRrow in pTable.Rows)
+                {
+                    foreach (var field in CDRrow.ItemArray)
+                    {
+                        sw.Write(field.ToString() + "\t");
+                    }
+                    sw.WriteLine();
+                }
+            }
             return string.Empty;
         }
 

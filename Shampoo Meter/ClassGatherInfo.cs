@@ -45,7 +45,17 @@ namespace Shampoo_Meter
             return count;
         }
 
-        public static List<ClassDataFile> WriteNewFilessToExcel()
+        public static string DetermineFileName(string fileExtention)
+        {
+            string resultName = string.Empty;
+            DateTime date = new DateTime();
+            date = DateTime.Now;
+
+            resultName = date.ToString("MMMMMM");
+            return resultName + fileExtention;
+        }
+
+        public static List<ClassDataFile> WriteNewFilesToExcel(string fileName)
         {
             var myList = new List<ClassDataFile>();
             ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
@@ -67,10 +77,37 @@ namespace Shampoo_Meter
 
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
             ClassExcelTools excelObj = new ClassExcelTools();
-            string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", "AugustImport");
+            string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", fileName);
 
             return myList;
         }
         #endregion
+
+        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName)
+        {
+            var myList = new List<ClassDataFile>();
+            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
+            //TODO: Use path speciefied in settings to find new .dat files:
+            //1.Call latestExistingFile method to find out latest name in db.
+            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
+            String[] filePaths = Directory.GetFiles("C:\\MTN APN Data Files\\");
+            ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
+            int count = 0;
+
+            foreach (String fileLoc in filePaths)
+            {
+                ClassDataFile file = new ClassDataFile(fileLoc);
+                infoTable.AddNewRow(file, ref infoTable);
+                datFiles[count] = new ClassDataFile(filePaths[count]);
+                myList.Add(datFiles[count]);
+                count++;
+            }
+
+            //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
+            ClassExcelTools excelObj = new ClassExcelTools();
+            string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", fileName);
+
+            return myList;
+        }
     }
 }

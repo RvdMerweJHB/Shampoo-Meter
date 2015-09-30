@@ -102,9 +102,7 @@ namespace Shampoo_Meter.Classes
                     _sheetName = _sheetName + "th";
                     break;
             }
-            return _sheetName;
-
-            
+            return _sheetName;            
         }
     }
 }

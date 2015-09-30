@@ -43,9 +43,13 @@
             this.lblApnClientName = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.lbl2 = new System.Windows.Forms.Label();
+            this.lbl3 = new System.Windows.Forms.Label();
+            this.lbl4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.radXlsx = new System.Windows.Forms.RadioButton();
+            this.radCsv = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgSuccsessFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,6 +76,7 @@
             // 
             // btnImportFiles
             // 
+            this.btnImportFiles.Enabled = false;
             this.btnImportFiles.Location = new System.Drawing.Point(275, 38);
             this.btnImportFiles.Name = "btnImportFiles";
             this.btnImportFiles.Size = new System.Drawing.Size(100, 23);
@@ -91,6 +96,7 @@
             // 
             // btnCreateFileId
             // 
+            this.btnCreateFileId.Enabled = false;
             this.btnCreateFileId.Location = new System.Drawing.Point(397, 38);
             this.btnCreateFileId.Name = "btnCreateFileId";
             this.btnCreateFileId.Size = new System.Drawing.Size(100, 23);
@@ -101,7 +107,7 @@
             // 
             // btnCreateCMFile
             // 
-            this.btnCreateCMFile.Location = new System.Drawing.Point(224, 298);
+            this.btnCreateCMFile.Location = new System.Drawing.Point(11, 326);
             this.btnCreateCMFile.Name = "btnCreateCMFile";
             this.btnCreateCMFile.Size = new System.Drawing.Size(151, 23);
             this.btnCreateCMFile.TabIndex = 6;
@@ -111,9 +117,12 @@
             // 
             // dgSuccsessFiles
             // 
+            this.dgSuccsessFiles.AllowUserToAddRows = false;
+            this.dgSuccsessFiles.AllowUserToDeleteRows = false;
             this.dgSuccsessFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgSuccsessFiles.Location = new System.Drawing.Point(11, 91);
             this.dgSuccsessFiles.Name = "dgSuccsessFiles";
+            this.dgSuccsessFiles.ReadOnly = true;
             this.dgSuccsessFiles.Size = new System.Drawing.Size(240, 150);
             this.dgSuccsessFiles.TabIndex = 7;
             // 
@@ -184,41 +193,88 @@
             this.label4.TabIndex = 15;
             this.label4.Text = "1.";
             // 
+            // lbl2
+            // 
+            this.lbl2.AutoSize = true;
+            this.lbl2.Enabled = false;
+            this.lbl2.Location = new System.Drawing.Point(138, 43);
+            this.lbl2.Name = "lbl2";
+            this.lbl2.Size = new System.Drawing.Size(16, 13);
+            this.lbl2.TabIndex = 16;
+            this.lbl2.Text = "2.";
+            // 
+            // lbl3
+            // 
+            this.lbl3.AutoSize = true;
+            this.lbl3.Enabled = false;
+            this.lbl3.Location = new System.Drawing.Point(259, 43);
+            this.lbl3.Name = "lbl3";
+            this.lbl3.Size = new System.Drawing.Size(16, 13);
+            this.lbl3.TabIndex = 17;
+            this.lbl3.Text = "3.";
+            // 
+            // lbl4
+            // 
+            this.lbl4.AutoSize = true;
+            this.lbl4.Enabled = false;
+            this.lbl4.Location = new System.Drawing.Point(381, 43);
+            this.lbl4.Name = "lbl4";
+            this.lbl4.Size = new System.Drawing.Size(16, 13);
+            this.lbl4.TabIndex = 18;
+            this.lbl4.Text = "4.";
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(138, 43);
+            this.label5.Location = new System.Drawing.Point(162, 331);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(16, 13);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "2.";
+            this.label5.Size = new System.Drawing.Size(248, 13);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "(This action requires connection to the Lookup DB)";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(259, 43);
+            this.label6.Location = new System.Drawing.Point(12, 14);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(16, 13);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "3.";
+            this.label6.Size = new System.Drawing.Size(77, 13);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "Output Format:";
             // 
-            // label7
+            // radXlsx
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(381, 43);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(16, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "4.";
+            this.radXlsx.AutoSize = true;
+            this.radXlsx.Location = new System.Drawing.Point(88, 12);
+            this.radXlsx.Name = "radXlsx";
+            this.radXlsx.Size = new System.Drawing.Size(45, 17);
+            this.radXlsx.TabIndex = 22;
+            this.radXlsx.Text = ".xlsx";
+            this.radXlsx.UseVisualStyleBackColor = true;
+            // 
+            // radCsv
+            // 
+            this.radCsv.AutoSize = true;
+            this.radCsv.Checked = true;
+            this.radCsv.Location = new System.Drawing.Point(154, 12);
+            this.radCsv.Name = "radCsv";
+            this.radCsv.Size = new System.Drawing.Size(45, 17);
+            this.radCsv.TabIndex = 23;
+            this.radCsv.TabStop = true;
+            this.radCsv.Text = ".csv";
+            this.radCsv.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 375);
-            this.Controls.Add(this.label7);
+            this.Controls.Add(this.radCsv);
+            this.Controls.Add(this.radXlsx);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.lbl4);
+            this.Controls.Add(this.lbl3);
+            this.Controls.Add(this.lbl2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblApnClientName);
@@ -260,9 +316,13 @@
         private System.Windows.Forms.Label lblApnClientName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lbl2;
+        private System.Windows.Forms.Label lbl3;
+        private System.Windows.Forms.Label lbl4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RadioButton radXlsx;
+        private System.Windows.Forms.RadioButton radCsv;
     }
 }
 

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClassCSVTools.cs" />
     <Compile Include="Classes\ClassDataFile.cs" />
     <Compile Include="Classes\ClassExcelTools.cs" />
     <Compile Include="Classes\ClassSSISPackage.cs" />
