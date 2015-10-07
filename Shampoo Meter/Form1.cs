@@ -26,6 +26,7 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            MessageBox.Show("TODO:ClassSSISPackage line:55 is not working");
             DataTable apnClients = new DataTable();
             apnClients = DAL.ClassSQLAccess.GetDataTable();
             cmbApnClients.DataSource = apnClients;
@@ -89,23 +90,32 @@ namespace Shampoo_Meter
 
         private void btnImportFiles_Click(object sender, EventArgs e)
         {
-            foreach (Classes.ClassDataFile file in this.FileList)
-            {
-                //TODO:CREATE INSTANCE OF THE SSIS PACKAGE HERE
-                //AND USE ITS METHODS/PROPERTIES TO:
-                //1.CHECK IF .dtsx FILE EXISTS
-                //2.UPDATE THE .dtsx FILE WITH NEW FILE NAME AND DIR IF REQUIRED
-                //3.RUN THE SSIS PACKAGE
-                //4.CHECT THE RESULT MESSAGE IF IMPORT HAS BEEN SUCCESSFULL
+            //TODO:CREATE INSTANCE OF THE SSIS PACKAGE HERE
+            //AND USE ITS METHODS/PROPERTIES TO:
+            //1.CHECK IF .dtsx FILE EXISTS
+            //2.UPDATE THE .dtsx FILE WITH NEW FILE NAME AND DIR IF REQUIRED
+            //3.RUN THE SSIS PACKAGE
+            //4.CHECT THE RESULT MESSAGE IF IMPORT HAS BEEN SUCCESSFULL
 
-                Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage();
-                ssisPackage.ImportDataFile(file);
+            if (txtSSISTemplateLocation.Text != "Please select...")
+            {
+                foreach (Classes.ClassDataFile file in this.FileList)
+                {
+
+                    Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text);
+                    ssisPackage.ImportDataFile(file);
+                }
+                lbl4.Enabled = true;
+                btnCreateFileId.Enabled = true;
+
+                //TODO: Update excel file with status
+                MessageBox.Show("Data has been importer in the db");
             }
-            lbl4.Enabled = true;
-            btnCreateFileId.Enabled = true;
-            //TODO:INFORM USER THAT .dat FILES HAVE BEEN IMPORTED INTO DB 
-            //TODO: Update excel file with status
-            MessageBox.Show("Data has been importer in the db");
+            else
+            {
+                MessageBox.Show("SSIS Template location not Supplied");
+            }
+
         }
 
         private void btnCreateFileId_Click(object sender, EventArgs e)
@@ -142,6 +152,12 @@ namespace Shampoo_Meter
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
             DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+        }
+
+        private void btnLocateSSISTemplate_Click(object sender, EventArgs e)
+        {
+            dlgFileLocationBrowser.ShowDialog();
+            txtSSISTemplateLocation.Text = dlgFileLocationBrowser.FileName.ToString();
         }
 
     }

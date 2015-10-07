@@ -50,6 +50,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.radXlsx = new System.Windows.Forms.RadioButton();
             this.radCsv = new System.Windows.Forms.RadioButton();
+            this.dlgFolderLocationBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            this.txtSSISTemplateLocation = new System.Windows.Forms.TextBox();
+            this.btnLocateSSISTemplate = new System.Windows.Forms.Button();
+            this.dlgFileLocationBrowser = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dgSuccsessFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,7 +92,7 @@
             // lblLocateSSISPackage
             // 
             this.lblLocateSSISPackage.AutoSize = true;
-            this.lblLocateSSISPackage.Location = new System.Drawing.Point(381, 9);
+            this.lblLocateSSISPackage.Location = new System.Drawing.Point(272, 14);
             this.lblLocateSSISPackage.Name = "lblLocateSSISPackage";
             this.lblLocateSSISPackage.Size = new System.Drawing.Size(125, 13);
             this.lblLocateSSISPackage.TabIndex = 4;
@@ -263,11 +267,35 @@
             this.radCsv.Text = ".csv";
             this.radCsv.UseVisualStyleBackColor = true;
             // 
+            // txtSSISTemplateLocation
+            // 
+            this.txtSSISTemplateLocation.Location = new System.Drawing.Point(397, 11);
+            this.txtSSISTemplateLocation.Name = "txtSSISTemplateLocation";
+            this.txtSSISTemplateLocation.Size = new System.Drawing.Size(187, 20);
+            this.txtSSISTemplateLocation.TabIndex = 24;
+            this.txtSSISTemplateLocation.Text = "Please select...";
+            // 
+            // btnLocateSSISTemplate
+            // 
+            this.btnLocateSSISTemplate.Location = new System.Drawing.Point(590, 9);
+            this.btnLocateSSISTemplate.Name = "btnLocateSSISTemplate";
+            this.btnLocateSSISTemplate.Size = new System.Drawing.Size(24, 23);
+            this.btnLocateSSISTemplate.TabIndex = 25;
+            this.btnLocateSSISTemplate.Text = "...";
+            this.btnLocateSSISTemplate.UseVisualStyleBackColor = true;
+            this.btnLocateSSISTemplate.Click += new System.EventHandler(this.btnLocateSSISTemplate_Click);
+            // 
+            // dlgFileLocationBrowser
+            // 
+            this.dlgFileLocationBrowser.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 375);
+            this.Controls.Add(this.btnLocateSSISTemplate);
+            this.Controls.Add(this.txtSSISTemplateLocation);
             this.Controls.Add(this.radCsv);
             this.Controls.Add(this.radXlsx);
             this.Controls.Add(this.label6);
@@ -323,6 +351,10 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.RadioButton radXlsx;
         private System.Windows.Forms.RadioButton radCsv;
+        private System.Windows.Forms.FolderBrowserDialog dlgFolderLocationBrowser;
+        private System.Windows.Forms.TextBox txtSSISTemplateLocation;
+        private System.Windows.Forms.Button btnLocateSSISTemplate;
+        private System.Windows.Forms.OpenFileDialog dlgFileLocationBrowser;
     }
 }
 
