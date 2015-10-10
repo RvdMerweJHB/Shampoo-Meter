@@ -26,7 +26,7 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MessageBox.Show("TODO:ClassSSISPackage line:55 is not working");
+            MessageBox.Show("TODO:CSV Issues, Upates and DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
             DataTable apnClients = new DataTable();
             apnClients = DAL.ClassSQLAccess.GetDataTable();
             cmbApnClients.DataSource = apnClients;
@@ -40,8 +40,8 @@ namespace Shampoo_Meter
             int newFiles = ClassGatherInfo.CheckForNewFiles();
             string fileName = string.Empty;
             string fileExtention = (radCsv.Checked) ? radCsv.Text : radXlsx.Text;
-            //TODO: Update user with how may files have been found.
-            //THEN: User should be informed if all the new files are intact.
+
+            //TODO: User should be informed if all the new files are intact.
 
             //• WRITE NEW .dat FILE INFO TO EXCEL
             try
@@ -151,7 +151,15 @@ namespace Shampoo_Meter
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
-            DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+            try
+            {
+                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+                MessageBox.Show("Data file has been created for:" + cmbApnClients.SelectedValue.ToString() + "");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("There has been an error creating Data file for:" + cmbApnClients.SelectedValue.ToString() + Environment.NewLine + "Message:" + ex.Message + "");
+            }
         }
 
         private void btnLocateSSISTemplate_Click(object sender, EventArgs e)

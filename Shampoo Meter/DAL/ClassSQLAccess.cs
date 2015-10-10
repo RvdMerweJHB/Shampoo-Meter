@@ -19,7 +19,7 @@ namespace Shampoo_Meter.DAL
 
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
-         
+
             sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
             StringBuilder sqlQuery = new StringBuilder();
 
@@ -51,7 +51,7 @@ namespace Shampoo_Meter.DAL
             sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
             sqlCommand.Connection = sqlConnection;
 
-            sqlCommand.CommandText = BuildImportRawdataQuery(fileId,tableName);
+            sqlCommand.CommandText = BuildImportRawdataQuery(fileId, tableName);
             sqlConnection.Open();
             int count = sqlCommand.ExecuteNonQuery();
             sqlConnection.Close();
@@ -77,7 +77,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded)");
             sqlQuery.AppendLine("   VALUES");
 
-            foreach(ClassDataFile newDataFile in dataFiles)
+            foreach (ClassDataFile newDataFile in dataFiles)
             {
                 sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()),");
                 if (fileCount == (dataFiles.Count()))
@@ -208,36 +208,42 @@ namespace Shampoo_Meter.DAL
             return sqlQuery.ToString();
         }
 
-        public static string CreateCMFile(string apnName, int beginFileId, int endFileId)
+        public static void CreateCMFile(string apnName, int beginFileId, int endFileId)
         {
-            SqlConnection sqlConnection = new SqlConnection();
-            SqlCommand sqlCommand = new SqlCommand();
-            DataTable pTable = new DataTable();
-
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
-            sqlCommand.Connection = sqlConnection;
-
-            sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
-            sqlConnection.Open();
-            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            try
             {
-                sqlAdaptor.Fill(pTable);
-            }
+                SqlConnection sqlConnection = new SqlConnection();
+                SqlCommand sqlCommand = new SqlCommand();
+                DataTable pTable = new DataTable();
 
-            sqlConnection.Close();
+                sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+                sqlCommand.Connection = sqlConnection;
 
-            using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
-            {
-                foreach (DataRow CDRrow in pTable.Rows)
+                sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
+                sqlConnection.Open();
+                using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
                 {
-                    foreach (var field in CDRrow.ItemArray)
+                    sqlAdaptor.Fill(pTable);
+                }
+                sqlConnection.Close();
+
+                //• TODO alter the file location to be writen to:
+                using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
+                {
+                    foreach (DataRow CDRrow in pTable.Rows)
                     {
-                        sw.Write(field.ToString() + "\t");
+                        foreach (var field in CDRrow.ItemArray)
+                        {
+                            sw.Write(field.ToString() + "\t");
+                        }
+                        sw.WriteLine();
                     }
-                    sw.WriteLine();
                 }
             }
-            return string.Empty;
+            catch
+            {
+                throw;
+            }
         }
 
         private static string BuildAPNDataFileForCMQuery(string apnName, int beginFileId, int endFileId)

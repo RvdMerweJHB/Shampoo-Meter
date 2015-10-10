@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Shampoo_Meter.Classes;
 using Shampoo_Meter.DataTables;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Data;
+using System.IO;
+using System.Data.OleDb;
 
 namespace Shampoo_Meter.Classes
 {
@@ -32,6 +35,53 @@ namespace Shampoo_Meter.Classes
         //Open existing file:
         //Write to existing file:
         //New Sheet Name:
+
+        public string ReadTableFromExcel(string fileName)
+        {
+            Excel.Application exApp;
+            exApp = new Excel.Application();
+            Excel.Workbook exWorkBook;
+            exWorkBook = exApp.Workbooks.Open(fileName);
+
+            // get all sheets in workbook
+            Excel.Sheets excelSheets = exWorkBook.Worksheets;
+
+            // get some sheet
+            string currentSheet = "October.xlsx";
+            Excel.Worksheet exWorkSheet =
+                (Excel.Worksheet)excelSheets.get_Item(currentSheet);
+
+            Excel.Range excelCell = (Excel.Range)exWorkSheet.get_Range("A1", "A1");
+            string test = excelCell.get_Item("A1","A1");
+            exWorkBook.Close();
+            exApp.Quit();
+            return "saved";
+            //DataTable tbContainer = new DataTable();
+            //string strConn = string.Empty;
+            //if (string.IsNullOrEmpty(sheetName)) { sheetName = "Sheet1"; }
+            //FileInfo file = new FileInfo(pathName);
+            //if (!file.Exists) { throw new Exception("Error, file doesn't exists!"); }
+            //string extension = file.Extension;
+            //switch (extension)
+            //{
+            //    case ".xls":
+            //        strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + pathName + ";Extended Properties='Excel 8.0;HDR=Yes;IMEX=1;'";
+            //        break;
+            //    case ".xlsx":
+            //        strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + pathName + ";Extended Properties='Excel 12.0;HDR=Yes;IMEX=1;'";
+            //        break;
+            //    default:
+            //        strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + pathName + ";Extended Properties='Excel 8.0;HDR=Yes;IMEX=1;'";
+            //        break;
+            //}
+            //OleDbConnection cnnxls = new OleDbConnection(strConn);
+            //OleDbDataAdapter oda = new OleDbDataAdapter(string.Format("select * from [{0}$]", sheetName), cnnxls);
+            //DataSet ds = new DataSet();
+            //oda.Fill(tbContainer);
+            //DataTable test = new DataTable();
+            //test = tbContainer;
+            //return "read";
+        }
 
         public string SaveTableToExcel(ClassImportInfoDataTable infoTable, string ExcelFilePath, string fileName)
         {

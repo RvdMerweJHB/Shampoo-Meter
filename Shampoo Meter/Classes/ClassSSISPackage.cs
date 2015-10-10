@@ -21,13 +21,13 @@ namespace Shampoo_Meter.Classes
         public string templateLocation 
         {
             get { return _TemplateLocation;}
-            set { value = _TemplateLocation;} 
+            set {  _TemplateLocation = value;} 
         }
 
         public string templateName 
         {
-            get { return _TemplateName ;}
-            set { value = _TemplateName;} 
+            get { return _TemplateName;}
+            set { _TemplateName = value;} 
         }
 
         #region Constructors
@@ -36,8 +36,9 @@ namespace Shampoo_Meter.Classes
 
         public ClassSSISPackage(string path)
         {
-            this._TemplateLocation = path;
-            this._TemplateName = path.Substring(path.IndexOf("\\MTN APN"), path.Length - path.IndexOf("\\MTN APN"));
+            this.templateLocation = path;
+            int startIndex = path.IndexOf("MTN APN");
+            this.templateName = path.Substring(startIndex, path.Length - startIndex);
         }
         #endregion
 
@@ -51,9 +52,10 @@ namespace Shampoo_Meter.Classes
                 sr.Close();
             }
             line = this.TagReplace(file,line);
-            System.IO.File.WriteAllText(file.NewLocation.Substring(file.NewLocation.IndexOf(file.FileName), file.NewLocation.Length - file.NewLocation.IndexOf(file.FileName)) + this._TemplateName, line);
-            //System.IO.File.WriteAllText(file.NewLocation.IndexOf(file.FileName) + this._TemplateName, line);
-            return file.NewLocation + file.Day + "\\MTN APN Import File Data.dtsx";
+            string path;
+            path = file.NewLocation.Replace(file.FileName, this.templateName);
+            System.IO.File.WriteAllText(path, line);
+            return path;
         }
 
         public string TagReplace(ClassDataFile file, string line)

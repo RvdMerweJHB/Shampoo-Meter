@@ -78,7 +78,7 @@ namespace Shampoo_Meter
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
             ClassExcelTools excelObj = new ClassExcelTools();
             string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", fileName);
-
+            string testMessage = excelObj.ReadTableFromExcel("C:\\Data\\" + fileName);
             return myList;
         }
         #endregion
@@ -104,8 +104,8 @@ namespace Shampoo_Meter
             }
 
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            ClassExcelTools excelObj = new ClassExcelTools();
-            string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", fileName);
+            ClassCSVTools CSVObj = new ClassCSVTools();
+            string message = CSVObj.SaveTableToCSV(infoTable, "C:\\Data\\", fileName);
 
             return myList;
         }
