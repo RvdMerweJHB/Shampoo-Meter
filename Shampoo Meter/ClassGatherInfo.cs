@@ -55,14 +55,14 @@ namespace Shampoo_Meter
             return resultName + fileExtention;
         }
 
-        public static List<ClassDataFile> WriteNewFilesToExcel(string fileName)
+        public static List<ClassDataFile> WriteNewFilesToExcel(string fileName, string pickUpLocation)
         {
             var myList = new List<ClassDataFile>();
             ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
             //TODO: Use path speciefied in settings to find new .dat files:
             //1.Call latestExistingFile method to find out latest name in db.
             //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the excel file.
-            String[] filePaths = Directory.GetFiles("C:\\MTN APN Data Files\\");
+            String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
             
@@ -76,21 +76,21 @@ namespace Shampoo_Meter
             }
 
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            ClassExcelTools excelObj = new ClassExcelTools();
-            string message = excelObj.SaveTableToExcel(infoTable, "C:\\Data\\", fileName);
-            string testMessage = excelObj.ReadTableFromExcel("C:\\Data\\" + fileName);
+            //ClassExcelTools excelObj = new ClassExcelTools();
+            //string message = excelObj.SaveTableToExcel(infoTable, pickUpLocation, fileName);
+            //string testMessage = excelObj.ReadTableFromExcel(pickUpLocation + fileName);
             return myList;
         }
         #endregion
 
-        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName)
+        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, string pickUpLocation)
         {
             var myList = new List<ClassDataFile>();
             ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
             //TODO: Use path speciefied in settings to find new .dat files:
             //1.Call latestExistingFile method to find out latest name in db.
             //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
-            String[] filePaths = Directory.GetFiles("C:\\MTN APN Data Files\\");
+            String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
 
@@ -104,8 +104,8 @@ namespace Shampoo_Meter
             }
 
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            ClassCSVTools CSVObj = new ClassCSVTools();
-            string message = CSVObj.SaveTableToCSV(infoTable, "C:\\Data\\", fileName);
+            //ClassCSVTools CSVObj = new ClassCSVTools();
+            //string message = CSVObj.SaveTableToCSV(infoTable, pickUpLocation, fileName);
 
             return myList;
         }

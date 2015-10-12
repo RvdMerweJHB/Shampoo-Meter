@@ -17,6 +17,13 @@ namespace Shampoo_Meter.Classes
         //5. Indicate to user that package has comleted successfully, thus data in DB.
         private string _TemplateLocation;
         private string _TemplateName;
+        private string _ConnectionString;
+
+        public string connectionString
+        {
+            get { return _ConnectionString; }
+            set { _ConnectionString = value; }
+        }
 
         public string templateLocation 
         {
@@ -34,11 +41,12 @@ namespace Shampoo_Meter.Classes
         public ClassSSISPackage()
         { }
 
-        public ClassSSISPackage(string path)
+        public ClassSSISPackage(string path, string connstring)
         {
             this.templateLocation = path;
             int startIndex = path.IndexOf("MTN APN");
             this.templateName = path.Substring(startIndex, path.Length - startIndex);
+            this.connectionString = connstring;
         }
         #endregion
 
@@ -60,9 +68,9 @@ namespace Shampoo_Meter.Classes
 
         public string TagReplace(ClassDataFile file, string line)
         {
-            line = line.Replace("{ConnectionString}", "Data Source=VM_DEV;Initial Catalog=APN_DATA;Provider=SQLNCLI11;Integrated Security=SSPI;Auto Translate=false;");
+            line = line.Replace("{ConnectionString}", this.connectionString);
             line = line.Replace("{FileLocation}",file.NewLocation);
-            line = line.Replace("{FileName}","02"+file.Day+file.Month+file.FileNumber);
+            line = line.Replace("{FileName}",file.FileType + file.Day + file.Month + file.FileNumber);
             return line;
         }
 

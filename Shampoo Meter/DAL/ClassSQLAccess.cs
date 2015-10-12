@@ -42,13 +42,13 @@ namespace Shampoo_Meter.DAL
             return resultTable;
         }
 
-        public static int ImportRawData(string fileId, string tableName)
+        public static int ImportRawData(string fileId, string tableName, string connectionString)
         {
             tableName = tableName.Remove(8, tableName.Length - 8);
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+            sqlConnection.ConnectionString = connectionString;
             sqlCommand.Connection = sqlConnection;
 
             sqlCommand.CommandText = BuildImportRawdataQuery(fileId, tableName);
@@ -59,7 +59,7 @@ namespace Shampoo_Meter.DAL
             return count;
         }
 
-        public static DataTable InsertNewFileId(ClassDataFile[] dataFiles)
+        public static DataTable InsertNewFileId(ClassDataFile[] dataFiles, string connectionString)
         {
             DataTable pTable = new DataTable();
             int fileCount = 1;
@@ -67,7 +67,7 @@ namespace Shampoo_Meter.DAL
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+            sqlConnection.ConnectionString = connectionString;
 
             StringBuilder sqlQuery = new StringBuilder();
 
@@ -208,7 +208,7 @@ namespace Shampoo_Meter.DAL
             return sqlQuery.ToString();
         }
 
-        public static void CreateCMFile(string apnName, int beginFileId, int endFileId)
+        public static void CreateCMFile(string apnName, int beginFileId, int endFileId, string connectionString)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace Shampoo_Meter.DAL
                 SqlCommand sqlCommand = new SqlCommand();
                 DataTable pTable = new DataTable();
 
-                sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+                sqlConnection.ConnectionString = connectionString;
                 sqlCommand.Connection = sqlConnection;
 
                 sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);

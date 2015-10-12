@@ -24,38 +24,38 @@ namespace Shampoo_Meter
             Directory.CreateDirectory(newLoc + "\\" + dataFile.Day);
         }
 
-        public static void MoveFiles(ClassDataFile[] files)
+        public static void MoveFiles(ClassDataFile[] files, string outputLoaction)
         {
             foreach (ClassDataFile file in files)
             {
-                if (Directory.Exists("C:\\NewDatLocation"))
+                if (Directory.Exists(outputLoaction))
                 {
-                    if (Directory.Exists("C:\\NewDatLocation" + "\\" + file.MonthName))
+                    if (Directory.Exists(outputLoaction + "\\" + file.MonthName))
                     {
-                        if (Directory.Exists("C:\\NewDatLocation" + "\\" + file.MonthName + " 2015\\" + file.Day))
+                        if (Directory.Exists(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day))
                         {
-                            File.Copy(file.Location, "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                            file.NewLocation = "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                            File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
+                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
                         }
                         else
                         {
-                            Directory.CreateDirectory("C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                            File.Copy(file.Location, "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                            file.NewLocation = "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                            Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
+                            File.Copy(file.Location, outputLoaction +" \\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
+                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
                         }
                     }
                     else
                     {
-                        Directory.CreateDirectory("C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                        File.Copy(file.Location, "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                        file.NewLocation = "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                        Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
+                        File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
+                        file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
                     }
                 }
                 else
                 {
-                    Directory.CreateDirectory("C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                    File.Copy(file.Location, "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                    file.NewLocation = "C:\\NewDATLocation\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                    Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
+                    File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
+                    file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
                 }
             }
         }

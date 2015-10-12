@@ -11,6 +11,7 @@ namespace Shampoo_Meter.Classes
     {
         //Private variables
         private int intendedNumberOfLines;
+        private string _Filetype;
         private string _Filename;
         private string _FileExtension;
         private string _Location;
@@ -23,6 +24,12 @@ namespace Shampoo_Meter.Classes
 
         //Porperties
         #region Properties
+
+        public string FileType
+        {
+            get { return _Filetype; }
+            set { _Filetype = value; }
+        }
         public string FileName 
         { 
             get{return _Filename;}
@@ -101,6 +108,7 @@ namespace Shampoo_Meter.Classes
             this._Month = FileName.Substring(4, 2);
             this._MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
             this.FileNumber = FileName.Substring(6, 2);
+            this._Filetype = FileName.Substring(0, 2);
         }
 
         //Methods

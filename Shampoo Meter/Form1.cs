@@ -26,7 +26,7 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MessageBox.Show("TODO:CSV Issues, Upates and DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
+            //MessageBox.Show("TODO:CSV Issues, Upates and DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
             DataTable apnClients = new DataTable();
             apnClients = DAL.ClassSQLAccess.GetDataTable();
             cmbApnClients.DataSource = apnClients;
@@ -52,10 +52,10 @@ namespace Shampoo_Meter
                     switch (fileExtention)
                     {
                         case ".csv":
-                            this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName);
+                            this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName,txtFileLocation.Text);
                             break;
                         case ".xlsx":
-                            this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName);
+                            this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName, txtFileLocation.Text);
                             break;
                     }
                 }
@@ -77,7 +77,7 @@ namespace Shampoo_Meter
 
             try
             {
-                ClassTools.MoveFiles(datFiles);
+                ClassTools.MoveFiles(datFiles,txtOutputLocation.Text);
                 btnImportFiles.Enabled = true;
                 lbl3.Enabled = true;
                 MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -102,14 +102,14 @@ namespace Shampoo_Meter
                 foreach (Classes.ClassDataFile file in this.FileList)
                 {
 
-                    Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text);
+                    Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text, txtConnectionString.Text);
                     ssisPackage.ImportDataFile(file);
                 }
                 lbl4.Enabled = true;
                 btnCreateFileId.Enabled = true;
 
                 //TODO: Update excel file with status
-                MessageBox.Show("Data has been importer in the db");
+                MessageBox.Show("Data has been imported in the db");
             }
             else
             {
@@ -126,14 +126,14 @@ namespace Shampoo_Meter
             int successfullImports = 0;
             if (datFiles.Length >= 1)
             {
-                resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles);
+                resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles,txtConnectionString.Text);
             }
 
             foreach (DataRow dr in resultTable.Rows)
             {
                 try
                 {
-                    int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString());
+                    int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(),txtConnectionString.Text);
                     successfullImports++;
                 }
                 catch
@@ -153,7 +153,7 @@ namespace Shampoo_Meter
         {
             try
             {
-                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text));
+                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text),txtConnectionString.Text);
                 MessageBox.Show("Data file has been created for:" + cmbApnClients.SelectedValue.ToString() + "");
             }
             catch(Exception ex)
@@ -166,6 +166,11 @@ namespace Shampoo_Meter
         {
             dlgFileLocationBrowser.ShowDialog();
             txtSSISTemplateLocation.Text = dlgFileLocationBrowser.FileName.ToString();
+        }
+
+        private void txtOutputLocation_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
     }
