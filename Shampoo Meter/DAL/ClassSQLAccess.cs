@@ -13,14 +13,14 @@ namespace Shampoo_Meter.DAL
 {
     class ClassSQLAccess
     {
-        public static DataTable GetDataTable()
+        public static DataTable GetDataTable(string connectionString)
         {
             DataTable resultTable = new DataTable();
 
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+            sqlConnection.ConnectionString = connectionString;
             StringBuilder sqlQuery = new StringBuilder();
 
             sqlQuery.AppendLine("USE [APN_DATA]");

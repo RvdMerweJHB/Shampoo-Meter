@@ -15,27 +15,30 @@ namespace Shampoo_Meter.Classes
         //3. Execute ssis package
         //4. delete ssis package from temp location.
         //5. Indicate to user that package has comleted successfully, thus data in DB.
+
         private string _TemplateLocation;
         private string _TemplateName;
         private string _ConnectionString;
 
+        #region Properties
         public string connectionString
         {
             get { return _ConnectionString; }
             set { _ConnectionString = value; }
         }
 
-        public string templateLocation 
+        public string templateLocation
         {
-            get { return _TemplateLocation;}
-            set {  _TemplateLocation = value;} 
+            get { return _TemplateLocation; }
+            set { _TemplateLocation = value; }
         }
 
-        public string templateName 
+        public string templateName
         {
-            get { return _TemplateName;}
-            set { _TemplateName = value;} 
+            get { return _TemplateName; }
+            set { _TemplateName = value; }
         }
+        #endregion
 
         #region Constructors
         public ClassSSISPackage()
@@ -50,7 +53,7 @@ namespace Shampoo_Meter.Classes
         }
         #endregion
 
-
+        #region Private Methods
         private string UpdateTemplate(ClassDataFile file)
         {
             string line;
@@ -59,48 +62,52 @@ namespace Shampoo_Meter.Classes
                 line = sr.ReadToEnd();
                 sr.Close();
             }
-            line = this.TagReplace(file,line);
+            line = this.TagReplace(file, line);
             string path;
             path = file.NewLocation.Replace(file.FileName, this.templateName);
             System.IO.File.WriteAllText(path, line);
             return path;
         }
+        #endregion
 
+        #region Public Methods
         public string TagReplace(ClassDataFile file, string line)
         {
             line = line.Replace("{ConnectionString}", this.connectionString);
-            line = line.Replace("{FileLocation}",file.NewLocation);
-            line = line.Replace("{FileName}",file.FileType + file.Day + file.Month + file.FileNumber);
+            line = line.Replace("{FileLocation}", file.NewLocation);
+            line = line.Replace("{FileName}", file.FileType + file.Day + file.Month + file.FileNumber);
             return line;
         }
 
         public void ImportDataFile(ClassDataFile file)
         {
-            string newFileLoc =  this.UpdateTemplate(file);
-            Application app = new Application();
-            Package package = null;
-            //Load the SSIS Package which will be executed
-            package = app.LoadPackage(newFileLoc, null);
-            //Pass the varibles into SSIS Package
-                  
-            //Execute the SSIS Package and store the Execution Result
-            Microsoft.SqlServer.Dts.Runtime.DTSExecResult results = package.Execute();
-            //Check the results for Failure and Success
-            if (results == Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure)
+            try
             {
-                string err = "";
-                foreach (Microsoft.SqlServer.Dts.Runtime.DtsError local_DtsError in package.Errors)
+                string newFileLoc = this.UpdateTemplate(file);
+                Application app = new Application();
+                Package package = null;
+                //Load the SSIS Package which will be executed
+                package = app.LoadPackage(newFileLoc, null);
+                //Pass the varibles into SSIS Package
+
+                //Execute the SSIS Package and store the Execution Result
+                Microsoft.SqlServer.Dts.Runtime.DTSExecResult results = package.Execute();
+                //Check the results for Failure and Success
+                if (results == Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure)
                 {
-                    string error = local_DtsError.Description.ToString();
-                    err = err + error;
+                    string err = "";
+                    foreach (Microsoft.SqlServer.Dts.Runtime.DtsError local_DtsError in package.Errors)
+                    {
+                        string error = local_DtsError.Description.ToString();
+                        err = err + error;
+                    }
                 }
             }
-            if (results == Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success)
+            catch (Exception ex)
             {
-                string message = "Package Executed Successfully....";
+                throw ex;
             }
-            //You can also return the error or Execution Result
-            //return Error;
         }
+        #endregion
     }
 }

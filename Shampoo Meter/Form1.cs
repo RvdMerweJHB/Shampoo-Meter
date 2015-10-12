@@ -27,11 +27,19 @@ namespace Shampoo_Meter
         private void Form1_Load(object sender, EventArgs e)
         {
             //MessageBox.Show("TODO:CSV Issues, Upates and DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
-            DataTable apnClients = new DataTable();
-            apnClients = DAL.ClassSQLAccess.GetDataTable();
-            cmbApnClients.DataSource = apnClients;
-            cmbApnClients.ValueMember = "APN_Name";
-            cmbApnClients.DisplayMember = "Customer_Name";
+            try
+            {
+                DataTable apnClients = new DataTable();
+                apnClients = DAL.ClassSQLAccess.GetDataTable(Shampoo_Meter.Properties.Settings.Default.InitialConnectionString);
+                cmbApnClients.DataSource = apnClients;
+                cmbApnClients.ValueMember = "APN_Name";
+                cmbApnClients.DisplayMember = "Customer_Name";
+                txtConnectionString.Text = Shampoo_Meter.Properties.Settings.Default.InitialConnectionString;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Initial connection to APN DB has failed:" + Environment.NewLine + ex.Message.ToString());
+            }
         }
 
         private void btnFindFiles_Click(object sender, EventArgs e)
@@ -52,7 +60,7 @@ namespace Shampoo_Meter
                     switch (fileExtention)
                     {
                         case ".csv":
-                            this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName,txtFileLocation.Text);
+                            this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName, txtFileLocation.Text);
                             break;
                         case ".xlsx":
                             this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName, txtFileLocation.Text);
@@ -77,7 +85,7 @@ namespace Shampoo_Meter
 
             try
             {
-                ClassTools.MoveFiles(datFiles,txtOutputLocation.Text);
+                ClassTools.MoveFiles(datFiles, txtOutputLocation.Text);
                 btnImportFiles.Enabled = true;
                 lbl3.Enabled = true;
                 MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -96,24 +104,30 @@ namespace Shampoo_Meter
             //2.UPDATE THE .dtsx FILE WITH NEW FILE NAME AND DIR IF REQUIRED
             //3.RUN THE SSIS PACKAGE
             //4.CHECT THE RESULT MESSAGE IF IMPORT HAS BEEN SUCCESSFULL
-
-            if (txtSSISTemplateLocation.Text != "Please select...")
+            try
             {
-                foreach (Classes.ClassDataFile file in this.FileList)
+                if (txtSSISTemplateLocation.Text != "Please select...")
                 {
+                    foreach (Classes.ClassDataFile file in this.FileList)
+                    {
 
-                    Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text, txtConnectionString.Text);
-                    ssisPackage.ImportDataFile(file);
+                        Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text, txtSSISConnectionString.Text);
+                        ssisPackage.ImportDataFile(file);
+                    }
+                    lbl4.Enabled = true;
+                    btnCreateFileId.Enabled = true;
+
+                    //TODO: Update excel file with status
+                    MessageBox.Show("Data has been imported in the db");
                 }
-                lbl4.Enabled = true;
-                btnCreateFileId.Enabled = true;
-
-                //TODO: Update excel file with status
-                MessageBox.Show("Data has been imported in the db");
+                else
+                {
+                    MessageBox.Show("SSIS Template location not Supplied");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("SSIS Template location not Supplied");
+                MessageBox.Show(ex.ToString());
             }
 
         }
@@ -126,37 +140,40 @@ namespace Shampoo_Meter
             int successfullImports = 0;
             if (datFiles.Length >= 1)
             {
-                resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles,txtConnectionString.Text);
+                resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles, txtConnectionString.Text);
+                foreach (DataRow dr in resultTable.Rows)
+                {
+                    try
+                    {
+                        int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), txtConnectionString.Text);
+                        successfullImports++;
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error importing Row:" + dr[1].ToString());
+                    }
+                }
+                dgSuccsessFiles.DataSource = resultTable;
             }
-
-            foreach (DataRow dr in resultTable.Rows)
+            else
             {
-                try
-                {
-                    int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(),txtConnectionString.Text);
-                    successfullImports++;
-                }
-                catch
-                {
-                    MessageBox.Show("Error importing Row:" + dr[1].ToString());
-                }
+                MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
             }
 
             //TODO: Check the amount returned with the line amounts to make sure import was successfull.
             //TODO: Update excel file with status 
 
             MessageBox.Show("There has been " + successfullImports + " files imported");
-            dgSuccsessFiles.DataSource = resultTable;
         }
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
             try
             {
-                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text),txtConnectionString.Text);
+                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text), txtConnectionString.Text);
                 MessageBox.Show("Data file has been created for:" + cmbApnClients.SelectedValue.ToString() + "");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("There has been an error creating Data file for:" + cmbApnClients.SelectedValue.ToString() + Environment.NewLine + "Message:" + ex.Message + "");
             }
@@ -171,6 +188,18 @@ namespace Shampoo_Meter
         private void txtOutputLocation_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnLocateFilePickupLocation_Click(object sender, EventArgs e)
+        {
+            dlgFolderLocationBrowser.ShowDialog();
+            txtFileLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
+        }
+
+        private void btnLocateFileOutputLocation_Click(object sender, EventArgs e)
+        {
+            dlgFolderLocationBrowser.ShowDialog();
+            txtOutputLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
         }
 
     }

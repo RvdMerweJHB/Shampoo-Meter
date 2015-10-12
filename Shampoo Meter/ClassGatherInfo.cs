@@ -81,7 +81,7 @@ namespace Shampoo_Meter
             //string testMessage = excelObj.ReadTableFromExcel(pickUpLocation + fileName);
             return myList;
         }
-        #endregion
+        
 
         internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, string pickUpLocation)
         {
@@ -109,5 +109,6 @@ namespace Shampoo_Meter
 
             return myList;
         }
+        #endregion
     }
 }
