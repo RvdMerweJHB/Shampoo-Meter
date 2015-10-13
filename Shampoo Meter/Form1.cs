@@ -146,6 +146,7 @@ namespace Shampoo_Meter
                     try
                     {
                         int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), txtConnectionString.Text);
+                        bool updated = DAL.ClassSQLAccess.UpdateDataFile(dr[0].ToString(), txtConnectionString.Text);
                         successfullImports++;
                         //TODO: Check the amount returned with the line amounts to make sure import was successfull.
                     }
@@ -162,7 +163,7 @@ namespace Shampoo_Meter
             }
             //TODO: Update excel file with status 
 
-            MessageBox.Show("There has been " + successfullImports + " files imported");
+            MessageBox.Show("There has been " + successfullImports + " tables imported into MTN_APN_DATA table");
         }
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)

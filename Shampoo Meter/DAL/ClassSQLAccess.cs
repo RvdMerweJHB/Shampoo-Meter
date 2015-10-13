@@ -43,6 +43,23 @@ namespace Shampoo_Meter.DAL
             return resultTable;
         }
 
+        public static bool UpdateDataFile(string tableName, string connectionString)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.CommandText = BuildUpdateDataFileQuery(tableName);
+            sqlConnection.Open();
+            int count = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+
+            bool _result = (count >=1) ? true : false;
+
+            return _result;
+        }
+
         public static int ImportRawData(string fileId, string tableName, string connectionString)
         {
             tableName = tableName.Remove(8, tableName.Length - 8);
@@ -110,6 +127,46 @@ namespace Shampoo_Meter.DAL
             return pTable;
         }
 
+        public static void CreateCMFile(string apnName, int beginFileId, int endFileId, string connectionString)
+        {
+            try
+            {
+                SqlConnection sqlConnection = new SqlConnection();
+                SqlCommand sqlCommand = new SqlCommand();
+                DataTable pTable = new DataTable();
+
+                sqlConnection.ConnectionString = connectionString;
+                sqlCommand.Connection = sqlConnection;
+
+                sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
+                sqlConnection.Open();
+                using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+                {
+                    sqlAdaptor.Fill(pTable);
+                }
+                sqlConnection.Close();
+
+                //• TODO alter the file location to be writen to:
+                using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
+                {
+                    foreach (DataRow CDRrow in pTable.Rows)
+                    {
+                        foreach (var field in CDRrow.ItemArray)
+                        {
+                            sw.Write(field.ToString() + "\t");
+                        }
+                        sw.WriteLine();
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        #region Private Methods
         private static string BuildImportRawdataQuery(string fileId, string tableName)
         {
             StringBuilder sqlQuery = new StringBuilder();
@@ -209,46 +266,19 @@ namespace Shampoo_Meter.DAL
             return sqlQuery.ToString();
         }
 
-        public static void CreateCMFile(string apnName, int beginFileId, int endFileId, string connectionString)
+        private static string BuildUpdateDataFileQuery(string fileId)
         {
-            try
-            {
-                SqlConnection sqlConnection = new SqlConnection();
-                SqlCommand sqlCommand = new SqlCommand();
-                DataTable pTable = new DataTable();
+            StringBuilder sqlQuery = new StringBuilder();
 
-                sqlConnection.ConnectionString = connectionString;
-                sqlCommand.Connection = sqlConnection;
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("UPDATE [dbo].[MTN_APN_Data_File]");
+            sqlQuery.AppendLine("SET Date_Completed = GETDATE()");
+            sqlQuery.AppendLine("WHERE ID = " + fileId);
 
-                sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
-                sqlConnection.Open();
-                using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
-                {
-                    sqlAdaptor.Fill(pTable);
-                }
-                sqlConnection.Close();
-
-                //• TODO alter the file location to be writen to:
-                using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
-                {
-                    foreach (DataRow CDRrow in pTable.Rows)
-                    {
-                        foreach (var field in CDRrow.ItemArray)
-                        {
-                            sw.Write(field.ToString() + "\t");
-                        }
-                        sw.WriteLine();
-                    }
-                }
-            }
-            catch
-            {
-                throw;
-            }
+            return sqlQuery.ToString();
         }
-        #endregion
 
-        #region Private Methods
         private static string BuildAPNDataFileForCMQuery(string apnName, int beginFileId, int endFileId)
         {
             StringBuilder sqlQuery = new StringBuilder();
