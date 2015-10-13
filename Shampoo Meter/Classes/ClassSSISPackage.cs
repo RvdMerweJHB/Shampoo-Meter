@@ -16,9 +16,11 @@ namespace Shampoo_Meter.Classes
         //4. delete ssis package from temp location.
         //5. Indicate to user that package has comleted successfully, thus data in DB.
 
+        #region Private Variables
         private string _TemplateLocation;
         private string _TemplateName;
         private string _ConnectionString;
+        #endregion
 
         #region Properties
         public string connectionString

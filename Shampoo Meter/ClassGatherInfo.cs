@@ -20,9 +20,7 @@ namespace Shampoo_Meter
 
         //Private variables
 
-
         //Porperties
-
 
         //Constructors
 

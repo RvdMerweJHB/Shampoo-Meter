@@ -12,7 +12,7 @@ namespace Shampoo_Meter
     class ClassTools
     {
         #region MoveFiles
-        //THE SUCCESS OF THESE METHODS DEPEND ENTIRELY ON THE FACT THAT THE .dat FILE ARE IN SEQUENCE.
+        //THE SUCCESS OF THESE METHODS DEPEND ENTIRELY ON THE FACT THAT THE .dat FILES ARE IN SEQUENCE.
         //THEY HAVE TO BE IN ORDER OF DATE ACSENDING (OLD TO NEW)
         public static void CreateNewMonthDir(ClassDataFile dataFile, string newLoc)
         {
@@ -28,34 +28,35 @@ namespace Shampoo_Meter
         {
             foreach (ClassDataFile file in files)
             {
+                string yearNumber = file.Year;
                 if (Directory.Exists(outputLoaction))
                 {
-                    if (Directory.Exists(outputLoaction + "\\" + file.MonthName))
+                    if (Directory.Exists(outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\"))
                     {
-                        if (Directory.Exists(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day))
+                        if (Directory.Exists(outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day))
                         {
-                            File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                            File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName);
+                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName;
                         }
                         else
                         {
-                            Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                            File.Copy(file.Location, outputLoaction +" \\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                            Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\");
+                            File.Copy(file.Location, outputLoaction + " \\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName);
+                            file.NewLocation = outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName;
                         }
                     }
                     else
                     {
-                        Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                        File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                        file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                        Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\");
+                        File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName);
+                        file.NewLocation = outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName;
                     }
                 }
                 else
                 {
-                    Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\");
-                    File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName);
-                    file.NewLocation = outputLoaction + "\\" + file.MonthName + " 2015\\" + file.Day + "\\" + file.FileName;
+                    Directory.CreateDirectory(outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\");
+                    File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName);
+                    file.NewLocation = outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName;
                 }
             }
         }

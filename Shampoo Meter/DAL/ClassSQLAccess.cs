@@ -13,6 +13,7 @@ namespace Shampoo_Meter.DAL
 {
     class ClassSQLAccess
     {
+        #region Public Methods
         public static DataTable GetDataTable(string connectionString)
         {
             DataTable resultTable = new DataTable();
@@ -245,7 +246,9 @@ namespace Shampoo_Meter.DAL
                 throw;
             }
         }
+        #endregion
 
+        #region Private Methods
         private static string BuildAPNDataFileForCMQuery(string apnName, int beginFileId, int endFileId)
         {
             StringBuilder sqlQuery = new StringBuilder();
@@ -271,5 +274,6 @@ namespace Shampoo_Meter.DAL
 
             return sqlQuery.ToString();
         }
+        #endregion
     }
 }

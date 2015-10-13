@@ -26,7 +26,7 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MessageBox.Show("TODO:CSV Issues, Upates and DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
+            //MessageBox.Show("TODO:Update Filename table when importraw data has fininshed. DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
             try
             {
                 DataTable apnClients = new DataTable();
@@ -73,7 +73,7 @@ namespace Shampoo_Meter
             }
             catch (Exception ex)
             {
-                MessageBox.Show("There has been an Error:" + ex.InnerException.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -92,7 +92,7 @@ namespace Shampoo_Meter
             }
             catch (Exception ex)
             {
-                MessageBox.Show("There has been an Error:" + ex.InnerException.Message, "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("There has been an Error:" + ex.Message, "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -147,6 +147,7 @@ namespace Shampoo_Meter
                     {
                         int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), txtConnectionString.Text);
                         successfullImports++;
+                        //TODO: Check the amount returned with the line amounts to make sure import was successfull.
                     }
                     catch
                     {
@@ -159,8 +160,6 @@ namespace Shampoo_Meter
             {
                 MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
             }
-
-            //TODO: Check the amount returned with the line amounts to make sure import was successfull.
             //TODO: Update excel file with status 
 
             MessageBox.Show("There has been " + successfullImports + " files imported");
@@ -201,6 +200,5 @@ namespace Shampoo_Meter
             dlgFolderLocationBrowser.ShowDialog();
             txtOutputLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
         }
-
     }
 }
