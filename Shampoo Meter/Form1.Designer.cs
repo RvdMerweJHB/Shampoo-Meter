@@ -111,7 +111,7 @@
             // btnCreateFileId
             // 
             this.btnCreateFileId.Enabled = false;
-            this.btnCreateFileId.Location = new System.Drawing.Point(29, 144);
+            this.btnCreateFileId.Location = new System.Drawing.Point(31, 144);
             this.btnCreateFileId.Name = "btnCreateFileId";
             this.btnCreateFileId.Size = new System.Drawing.Size(100, 23);
             this.btnCreateFileId.TabIndex = 5;
@@ -192,7 +192,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 172);
+            this.label3.Location = new System.Drawing.Point(28, 172);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(118, 13);
             this.label3.TabIndex = 14;
@@ -393,7 +393,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(618, 491);
             this.Controls.Add(this.btnLocateFilePickupLocation);
             this.Controls.Add(this.btnLocateFileOutputLocation);

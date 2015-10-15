@@ -12,8 +12,6 @@ namespace Shampoo_Meter
     class ClassTools
     {
         #region MoveFiles
-        //THE SUCCESS OF THESE METHODS DEPEND ENTIRELY ON THE FACT THAT THE .dat FILES ARE IN SEQUENCE.
-        //THEY HAVE TO BE IN ORDER OF DATE ACSENDING (OLD TO NEW)
         public static void CreateNewMonthDir(ClassDataFile dataFile, string newLoc)
         {
             Directory.CreateDirectory(newLoc + "\\" + dataFile.Month);

@@ -79,7 +79,7 @@ namespace Shampoo_Meter
 
         private void btnMoveFiles_Click(object sender, EventArgs e)
         {
-            //• MOVE THE NEW FILE TO THE APPROPRIATE LOCATION
+            //• MOVE THE NEW FILE TO THE NEW LOCATION 
             Classes.ClassDataFile[] datFiles;
             datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
 
@@ -98,12 +98,9 @@ namespace Shampoo_Meter
 
         private void btnImportFiles_Click(object sender, EventArgs e)
         {
-            //TODO:CREATE INSTANCE OF THE SSIS PACKAGE HERE
-            //AND USE ITS METHODS/PROPERTIES TO:
+
+            //TODO:
             //1.CHECK IF .dtsx FILE EXISTS
-            //2.UPDATE THE .dtsx FILE WITH NEW FILE NAME AND DIR IF REQUIRED
-            //3.RUN THE SSIS PACKAGE
-            //4.CHECT THE RESULT MESSAGE IF IMPORT HAS BEEN SUCCESSFULL
             try
             {
                 if (txtSSISTemplateLocation.Text != "Please select...")
