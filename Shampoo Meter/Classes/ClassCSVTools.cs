@@ -42,7 +42,6 @@ namespace Shampoo_Meter.Classes
             return "read";
         }
 
-
         public string SaveTableToCSV(ClassImportInfoDataTable infoTable, string csvFilePath, string fileName)
         {
             int columns = infoTable.infoTable.Columns.Count;

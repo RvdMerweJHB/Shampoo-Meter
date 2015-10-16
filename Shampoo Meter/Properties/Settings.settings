@@ -3,7 +3,25 @@
   <Profiles />
   <Settings>
     <Setting Name="InitialConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;</Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FileLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OutputLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SSISConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SSISTemplateLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LogFileExt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.csv</Value>
     </Setting>
   </Settings>
 </SettingsFile>

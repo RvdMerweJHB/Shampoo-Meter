@@ -12,9 +12,9 @@ using System.Data.OleDb;
 
 namespace Shampoo_Meter.Classes
 {
-    //Thid class should contain methods that can:
+    //This class should contain methods that can:
     //Retrieve the exel file
-    //Write information to the excel file
+    //Write information to the excel file<--Currently busy with this!
     //Create it if it doesnt exists or if new month
     //Add each day as new sheet.
     class ClassExcelTools

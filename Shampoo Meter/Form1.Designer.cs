@@ -31,7 +31,6 @@
             this.btnFindFiles = new System.Windows.Forms.Button();
             this.btnMoveFiles = new System.Windows.Forms.Button();
             this.btnImportFiles = new System.Windows.Forms.Button();
-            this.lblLocateSSISPackage = new System.Windows.Forms.Label();
             this.btnCreateFileId = new System.Windows.Forms.Button();
             this.btnCreateCMFile = new System.Windows.Forms.Button();
             this.dgSuccsessFiles = new System.Windows.Forms.DataGridView();
@@ -47,23 +46,7 @@
             this.lbl3 = new System.Windows.Forms.Label();
             this.lbl4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.radXlsx = new System.Windows.Forms.RadioButton();
-            this.radCsv = new System.Windows.Forms.RadioButton();
-            this.dlgFolderLocationBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.txtSSISTemplateLocation = new System.Windows.Forms.TextBox();
-            this.btnLocateSSISTemplate = new System.Windows.Forms.Button();
-            this.dlgFileLocationBrowser = new System.Windows.Forms.OpenFileDialog();
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtConnectionString = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtFileLocation = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtOutputLocation = new System.Windows.Forms.TextBox();
-            this.txtSSISConnectionString = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnLocateFileOutputLocation = new System.Windows.Forms.Button();
-            this.btnLocateFilePickupLocation = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgSuccsessFiles)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,7 +63,7 @@
             // btnMoveFiles
             // 
             this.btnMoveFiles.Enabled = false;
-            this.btnMoveFiles.Location = new System.Drawing.Point(29, 64);
+            this.btnMoveFiles.Location = new System.Drawing.Point(30, 41);
             this.btnMoveFiles.Name = "btnMoveFiles";
             this.btnMoveFiles.Size = new System.Drawing.Size(99, 23);
             this.btnMoveFiles.TabIndex = 1;
@@ -91,7 +74,7 @@
             // btnImportFiles
             // 
             this.btnImportFiles.Enabled = false;
-            this.btnImportFiles.Location = new System.Drawing.Point(29, 91);
+            this.btnImportFiles.Location = new System.Drawing.Point(29, 70);
             this.btnImportFiles.Name = "btnImportFiles";
             this.btnImportFiles.Size = new System.Drawing.Size(100, 23);
             this.btnImportFiles.TabIndex = 2;
@@ -99,19 +82,10 @@
             this.btnImportFiles.UseVisualStyleBackColor = true;
             this.btnImportFiles.Click += new System.EventHandler(this.btnImportFiles_Click);
             // 
-            // lblLocateSSISPackage
-            // 
-            this.lblLocateSSISPackage.AutoSize = true;
-            this.lblLocateSSISPackage.Location = new System.Drawing.Point(180, 124);
-            this.lblLocateSSISPackage.Name = "lblLocateSSISPackage";
-            this.lblLocateSSISPackage.Size = new System.Drawing.Size(125, 13);
-            this.lblLocateSSISPackage.TabIndex = 4;
-            this.lblLocateSSISPackage.Text = "SSIS Template Location:";
-            // 
             // btnCreateFileId
             // 
             this.btnCreateFileId.Enabled = false;
-            this.btnCreateFileId.Location = new System.Drawing.Point(31, 144);
+            this.btnCreateFileId.Location = new System.Drawing.Point(29, 99);
             this.btnCreateFileId.Name = "btnCreateFileId";
             this.btnCreateFileId.Size = new System.Drawing.Size(100, 23);
             this.btnCreateFileId.TabIndex = 5;
@@ -134,10 +108,10 @@
             this.dgSuccsessFiles.AllowUserToAddRows = false;
             this.dgSuccsessFiles.AllowUserToDeleteRows = false;
             this.dgSuccsessFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgSuccsessFiles.Location = new System.Drawing.Point(152, 172);
+            this.dgSuccsessFiles.Location = new System.Drawing.Point(29, 141);
             this.dgSuccsessFiles.Name = "dgSuccsessFiles";
             this.dgSuccsessFiles.ReadOnly = true;
-            this.dgSuccsessFiles.Size = new System.Drawing.Size(454, 232);
+            this.dgSuccsessFiles.Size = new System.Drawing.Size(196, 232);
             this.dgSuccsessFiles.TabIndex = 7;
             // 
             // txtBeginID
@@ -192,7 +166,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 172);
+            this.label3.Location = new System.Drawing.Point(26, 125);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(118, 13);
             this.label3.TabIndex = 14;
@@ -211,7 +185,7 @@
             // 
             this.lbl2.AutoSize = true;
             this.lbl2.Enabled = false;
-            this.lbl2.Location = new System.Drawing.Point(9, 69);
+            this.lbl2.Location = new System.Drawing.Point(9, 46);
             this.lbl2.Name = "lbl2";
             this.lbl2.Size = new System.Drawing.Size(16, 13);
             this.lbl2.TabIndex = 16;
@@ -221,7 +195,7 @@
             // 
             this.lbl3.AutoSize = true;
             this.lbl3.Enabled = false;
-            this.lbl3.Location = new System.Drawing.Point(9, 91);
+            this.lbl3.Location = new System.Drawing.Point(9, 75);
             this.lbl3.Name = "lbl3";
             this.lbl3.Size = new System.Drawing.Size(16, 13);
             this.lbl3.TabIndex = 17;
@@ -231,7 +205,7 @@
             // 
             this.lbl4.AutoSize = true;
             this.lbl4.Enabled = false;
-            this.lbl4.Location = new System.Drawing.Point(9, 149);
+            this.lbl4.Location = new System.Drawing.Point(9, 104);
             this.lbl4.Name = "lbl4";
             this.lbl4.Size = new System.Drawing.Size(16, 13);
             this.lbl4.TabIndex = 18;
@@ -246,148 +220,15 @@
             this.label5.TabIndex = 19;
             this.label5.Text = "(This action requires connection to the Lookup DB)";
             // 
-            // label6
+            // btnSettings
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(227, 17);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(77, 13);
-            this.label6.TabIndex = 20;
-            this.label6.Text = "Output Format:";
-            // 
-            // radXlsx
-            // 
-            this.radXlsx.AutoSize = true;
-            this.radXlsx.Location = new System.Drawing.Point(363, 15);
-            this.radXlsx.Name = "radXlsx";
-            this.radXlsx.Size = new System.Drawing.Size(45, 17);
-            this.radXlsx.TabIndex = 22;
-            this.radXlsx.Text = ".xlsx";
-            this.radXlsx.UseVisualStyleBackColor = true;
-            // 
-            // radCsv
-            // 
-            this.radCsv.AutoSize = true;
-            this.radCsv.Checked = true;
-            this.radCsv.Location = new System.Drawing.Point(310, 15);
-            this.radCsv.Name = "radCsv";
-            this.radCsv.Size = new System.Drawing.Size(45, 17);
-            this.radCsv.TabIndex = 23;
-            this.radCsv.TabStop = true;
-            this.radCsv.Text = ".csv";
-            this.radCsv.UseVisualStyleBackColor = true;
-            // 
-            // txtSSISTemplateLocation
-            // 
-            this.txtSSISTemplateLocation.Location = new System.Drawing.Point(310, 120);
-            this.txtSSISTemplateLocation.Name = "txtSSISTemplateLocation";
-            this.txtSSISTemplateLocation.Size = new System.Drawing.Size(266, 20);
-            this.txtSSISTemplateLocation.TabIndex = 24;
-            this.txtSSISTemplateLocation.Text = "Please select...";
-            // 
-            // btnLocateSSISTemplate
-            // 
-            this.btnLocateSSISTemplate.Location = new System.Drawing.Point(582, 120);
-            this.btnLocateSSISTemplate.Name = "btnLocateSSISTemplate";
-            this.btnLocateSSISTemplate.Size = new System.Drawing.Size(24, 20);
-            this.btnLocateSSISTemplate.TabIndex = 25;
-            this.btnLocateSSISTemplate.Text = "...";
-            this.btnLocateSSISTemplate.UseVisualStyleBackColor = true;
-            this.btnLocateSSISTemplate.Click += new System.EventHandler(this.btnLocateSSISTemplate_Click);
-            // 
-            // dlgFileLocationBrowser
-            // 
-            this.dlgFileLocationBrowser.FileName = "openFileDialog1";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(167, 149);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(137, 13);
-            this.label7.TabIndex = 26;
-            this.label7.Text = "APN DB Connection String:";
-            // 
-            // txtConnectionString
-            // 
-            this.txtConnectionString.Location = new System.Drawing.Point(310, 146);
-            this.txtConnectionString.Name = "txtConnectionString";
-            this.txtConnectionString.Size = new System.Drawing.Size(296, 20);
-            this.txtConnectionString.TabIndex = 27;
-            this.txtConnectionString.Text = "Please supply connection string...";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(202, 43);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(102, 13);
-            this.label8.TabIndex = 28;
-            this.label8.Text = "File Pickup location:";
-            // 
-            // txtFileLocation
-            // 
-            this.txtFileLocation.Location = new System.Drawing.Point(310, 41);
-            this.txtFileLocation.Name = "txtFileLocation";
-            this.txtFileLocation.Size = new System.Drawing.Size(266, 20);
-            this.txtFileLocation.TabIndex = 29;
-            this.txtFileLocation.Text = "C:\\MTN APN Data Files\\";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(203, 69);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(101, 13);
-            this.label9.TabIndex = 30;
-            this.label9.Text = "File Output location:";
-            // 
-            // txtOutputLocation
-            // 
-            this.txtOutputLocation.Location = new System.Drawing.Point(310, 68);
-            this.txtOutputLocation.Name = "txtOutputLocation";
-            this.txtOutputLocation.Size = new System.Drawing.Size(266, 20);
-            this.txtOutputLocation.TabIndex = 31;
-            this.txtOutputLocation.Text = "C:\\NewDatLocation";
-            this.txtOutputLocation.TextChanged += new System.EventHandler(this.txtOutputLocation_TextChanged);
-            // 
-            // txtSSISConnectionString
-            // 
-            this.txtSSISConnectionString.Location = new System.Drawing.Point(310, 94);
-            this.txtSSISConnectionString.Name = "txtSSISConnectionString";
-            this.txtSSISConnectionString.Size = new System.Drawing.Size(296, 20);
-            this.txtSSISConnectionString.TabIndex = 32;
-            this.txtSSISConnectionString.Text = "Data Source=VM_DEV;Initial Catalog=APN_DATA;Provider=SQLNCLI11;Integrated Securit" +
-    "y=SSPI;Auto Translate=false;";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(184, 97);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(121, 13);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "SSIS Connection String:";
-            // 
-            // btnLocateFileOutputLocation
-            // 
-            this.btnLocateFileOutputLocation.Location = new System.Drawing.Point(582, 67);
-            this.btnLocateFileOutputLocation.Name = "btnLocateFileOutputLocation";
-            this.btnLocateFileOutputLocation.Size = new System.Drawing.Size(24, 21);
-            this.btnLocateFileOutputLocation.TabIndex = 34;
-            this.btnLocateFileOutputLocation.Text = "...";
-            this.btnLocateFileOutputLocation.UseVisualStyleBackColor = true;
-            this.btnLocateFileOutputLocation.Click += new System.EventHandler(this.btnLocateFileOutputLocation_Click);
-            // 
-            // btnLocateFilePickupLocation
-            // 
-            this.btnLocateFilePickupLocation.Location = new System.Drawing.Point(582, 41);
-            this.btnLocateFilePickupLocation.Name = "btnLocateFilePickupLocation";
-            this.btnLocateFilePickupLocation.Size = new System.Drawing.Size(24, 20);
-            this.btnLocateFilePickupLocation.TabIndex = 35;
-            this.btnLocateFilePickupLocation.Text = "...";
-            this.btnLocateFilePickupLocation.UseVisualStyleBackColor = true;
-            this.btnLocateFilePickupLocation.Click += new System.EventHandler(this.btnLocateFilePickupLocation_Click);
+            this.btnSettings.Location = new System.Drawing.Point(531, 455);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnSettings.TabIndex = 20;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
             // Form1
             // 
@@ -395,21 +236,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(618, 491);
-            this.Controls.Add(this.btnLocateFilePickupLocation);
-            this.Controls.Add(this.btnLocateFileOutputLocation);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.txtSSISConnectionString);
-            this.Controls.Add(this.txtOutputLocation);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.txtFileLocation);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.txtConnectionString);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.btnLocateSSISTemplate);
-            this.Controls.Add(this.txtSSISTemplateLocation);
-            this.Controls.Add(this.radCsv);
-            this.Controls.Add(this.radXlsx);
-            this.Controls.Add(this.label6);
+            this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lbl4);
             this.Controls.Add(this.lbl3);
@@ -425,7 +252,6 @@
             this.Controls.Add(this.dgSuccsessFiles);
             this.Controls.Add(this.btnCreateCMFile);
             this.Controls.Add(this.btnCreateFileId);
-            this.Controls.Add(this.lblLocateSSISPackage);
             this.Controls.Add(this.btnImportFiles);
             this.Controls.Add(this.btnMoveFiles);
             this.Controls.Add(this.btnFindFiles);
@@ -443,7 +269,6 @@
         private System.Windows.Forms.Button btnFindFiles;
         private System.Windows.Forms.Button btnMoveFiles;
         private System.Windows.Forms.Button btnImportFiles;
-        private System.Windows.Forms.Label lblLocateSSISPackage;
         private System.Windows.Forms.Button btnCreateFileId;
         private System.Windows.Forms.Button btnCreateCMFile;
         private System.Windows.Forms.DataGridView dgSuccsessFiles;
@@ -459,23 +284,7 @@
         private System.Windows.Forms.Label lbl3;
         private System.Windows.Forms.Label lbl4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.RadioButton radXlsx;
-        private System.Windows.Forms.RadioButton radCsv;
-        private System.Windows.Forms.FolderBrowserDialog dlgFolderLocationBrowser;
-        private System.Windows.Forms.TextBox txtSSISTemplateLocation;
-        private System.Windows.Forms.Button btnLocateSSISTemplate;
-        private System.Windows.Forms.OpenFileDialog dlgFileLocationBrowser;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox txtConnectionString;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txtFileLocation;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox txtOutputLocation;
-        private System.Windows.Forms.TextBox txtSSISConnectionString;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button btnLocateFileOutputLocation;
-        private System.Windows.Forms.Button btnLocateFilePickupLocation;
+        private System.Windows.Forms.Button btnSettings;
     }
 }
 

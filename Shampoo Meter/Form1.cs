@@ -30,13 +30,12 @@ namespace Shampoo_Meter
             try
             {
                 DataTable apnClients = new DataTable();
-                apnClients = DAL.ClassSQLAccess.GetDataTable(Shampoo_Meter.Properties.Settings.Default.InitialConnectionString);
+                apnClients = DAL.ClassSQLAccess.GetDataTable(Shampoo_Meter.Properties.Settings.Default.ConnectionString);
                 cmbApnClients.DataSource = apnClients;
                 cmbApnClients.ValueMember = "APN_Name";
                 cmbApnClients.DisplayMember = "Customer_Name";
-                txtConnectionString.Text = Shampoo_Meter.Properties.Settings.Default.InitialConnectionString;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Initial connection to APN DB has failed:" + Environment.NewLine + ex.Message.ToString());
             }
@@ -44,71 +43,90 @@ namespace Shampoo_Meter
 
         private void btnFindFiles_Click(object sender, EventArgs e)
         {
-            //• CHECK FOR NEW .dat FILES
-            int newFiles = ClassGatherInfo.CheckForNewFiles();
-            string fileName = string.Empty;
-            string fileExtention = (radCsv.Checked) ? radCsv.Text : radXlsx.Text;
+            string pickUpPath = Properties.Settings.Default.FileLocation;
 
-            //TODO: User should be informed if all the new files are intact.
-
-            //• WRITE NEW .dat FILE INFO TO EXCEL
-            try
+            if (pickUpPath == "Please Supply...")
             {
-                fileName = ClassGatherInfo.DetermineFileName(fileExtention);
-                if (newFiles >= 1)
-                {
-                    switch (fileExtention)
-                    {
-                        case ".csv":
-                            this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName, txtFileLocation.Text);
-                            break;
-                        case ".xlsx":
-                            this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName, txtFileLocation.Text);
-                            break;
-                    }
-                }
-                lbl2.Enabled = true;
-                btnMoveFiles.Enabled = true;
-                MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Pick Up Location not Supplied");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //• CHECK FOR NEW .dat FILES
+                int newFiles = ClassGatherInfo.CheckForNewFiles();
+                string fileName = string.Empty;
+                string fileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
+
+                //TODO: User should be informed if all the new files are intact.
+
+                //• WRITE NEW .dat FILE INFO TO EXCEL
+                try
+                {
+                    fileName = ClassGatherInfo.DetermineFileName(fileExtention);
+                    if (newFiles >= 1)
+                    {
+                        switch (fileExtention)
+                        {
+                            case ".csv":
+                                this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName, pickUpPath);
+                                break;
+                            case ".xlsx":
+                                this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName, pickUpPath);
+                                break;
+                        }
+                    }
+                    lbl2.Enabled = true;
+                    btnMoveFiles.Enabled = true;
+                    MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnMoveFiles_Click(object sender, EventArgs e)
         {
-            //• MOVE THE NEW FILE TO THE NEW LOCATION 
-            Classes.ClassDataFile[] datFiles;
-            datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
+            string outputPath = Properties.Settings.Default.OutputLocation;
 
-            try
+            if (outputPath == "Please Supply...")
             {
-                ClassTools.MoveFiles(datFiles, txtOutputLocation.Text);
-                btnImportFiles.Enabled = true;
-                lbl3.Enabled = true;
-                MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Connection String not Supplied");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("There has been an Error:" + ex.Message, "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //• MOVE THE NEW FILE TO THE NEW LOCATION 
+                Classes.ClassDataFile[] datFiles;
+                datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
+
+                try
+                {
+                    ClassTools.MoveFiles(datFiles, outputPath);
+                    btnImportFiles.Enabled = true;
+                    lbl3.Enabled = true;
+                    MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There has been an Error:" + ex.Message, "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnImportFiles_Click(object sender, EventArgs e)
         {
+            string SSISTemplateLocation = Properties.Settings.Default.SSISTemplateLocation;
+            string SSISConnectionString = Properties.Settings.Default.SSISConnectionString;
 
             //TODO:
             //1.CHECK IF .dtsx FILE EXISTS
             try
             {
-                if (txtSSISTemplateLocation.Text != "Please select...")
+                if (SSISTemplateLocation != "Please select..." || SSISConnectionString != "Please select...")
                 {
                     foreach (Classes.ClassDataFile file in this.FileList)
                     {
-
-                        Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(txtSSISTemplateLocation.Text, txtSSISConnectionString.Text);
+                        Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(SSISTemplateLocation, SSISConnectionString);
                         ssisPackage.ImportDataFile(file);
                     }
                     lbl4.Enabled = true;
@@ -119,7 +137,7 @@ namespace Shampoo_Meter
                 }
                 else
                 {
-                    MessageBox.Show("SSIS Template location not Supplied");
+                    MessageBox.Show("SSIS Template location or SSIS Connection String not Supplied");
                 }
             }
             catch (Exception ex)
@@ -131,72 +149,73 @@ namespace Shampoo_Meter
 
         private void btnCreateFileId_Click(object sender, EventArgs e)
         {
-            Classes.ClassDataFile[] datFiles;
-            datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
-            DataTable resultTable = new DataTable();
-            int successfullImports = 0;
-            if (datFiles.Length >= 1)
+            string connectionString = Properties.Settings.Default.ConnectionString;
+
+            if (connectionString == "Please Supply...")
             {
-                resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles, txtConnectionString.Text);
-                foreach (DataRow dr in resultTable.Rows)
-                {
-                    try
-                    {
-                        int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), txtConnectionString.Text);
-                        bool updated = DAL.ClassSQLAccess.UpdateDataFile(dr[0].ToString(), txtConnectionString.Text);
-                        successfullImports++;
-                        //TODO: Check the amount returned with the line amounts to make sure import was successfull.
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Error importing Row:" + dr[1].ToString());
-                    }
-                }
-                dgSuccsessFiles.DataSource = resultTable;
+                MessageBox.Show("Connection String not Supplied");
             }
             else
             {
-                MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
-            }
-            //TODO: Update excel file with status 
+                Classes.ClassDataFile[] datFiles;
+                datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
+                DataTable resultTable = new DataTable();
+                int successfullImports = 0;
+                if (datFiles.Length >= 1)
+                {
+                    resultTable = DAL.ClassSQLAccess.InsertNewFileId(datFiles, connectionString);
+                    foreach (DataRow dr in resultTable.Rows)
+                    {
+                        try
+                        {
+                            int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), connectionString);
+                            bool updated = DAL.ClassSQLAccess.UpdateDataFile(dr[0].ToString(), connectionString);
+                            successfullImports++;
+                            //TODO: Check the amount returned with the line amounts to make sure import was successfull.
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error importing Row:" + dr[1].ToString());
+                        }
+                    }
+                    dgSuccsessFiles.DataSource = resultTable;
+                }
+                else
+                {
+                    MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
+                }
+                //TODO: Update excel file with status 
 
-            MessageBox.Show("There has been " + successfullImports + " tables imported into MTN_APN_DATA table");
+                MessageBox.Show("There has been " + successfullImports + " tables imported into MTN_APN_DATA table");
+            }
         }
 
         private void btnCreateCMFile_Click(object sender, EventArgs e)
         {
-            try
+            string connectionString = Properties.Settings.Default.ConnectionString;
+
+            if (connectionString == "Please Supply...")
             {
-                DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text), txtConnectionString.Text);
-                MessageBox.Show("Data file has been created for:" + cmbApnClients.SelectedValue.ToString() + "");
+                MessageBox.Show("Connection String not Supplied");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("There has been an error creating Data file for:" + cmbApnClients.SelectedValue.ToString() + Environment.NewLine + "Message:" + ex.Message + "");
+                try
+                {
+                    DAL.ClassSQLAccess.CreateCMFile(cmbApnClients.SelectedValue.ToString(), Convert.ToUInt16(txtBeginID.Text), Convert.ToUInt16(txtEndID.Text), connectionString);
+                    MessageBox.Show("Data file has been created for:" + cmbApnClients.SelectedValue.ToString() + "");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There has been an error creating Data file for:" + cmbApnClients.SelectedValue.ToString() + Environment.NewLine + "Message:" + ex.Message + "");
+                }
             }
         }
 
-        private void btnLocateSSISTemplate_Click(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            dlgFileLocationBrowser.ShowDialog();
-            txtSSISTemplateLocation.Text = dlgFileLocationBrowser.FileName.ToString();
-        }
-
-        private void txtOutputLocation_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnLocateFilePickupLocation_Click(object sender, EventArgs e)
-        {
-            dlgFolderLocationBrowser.ShowDialog();
-            txtFileLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
-        }
-
-        private void btnLocateFileOutputLocation_Click(object sender, EventArgs e)
-        {
-            dlgFolderLocationBrowser.ShowDialog();
-            txtOutputLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
+            Settings settingsForm = new Settings();
+            settingsForm.ShowDialog();
         }
     }
 }

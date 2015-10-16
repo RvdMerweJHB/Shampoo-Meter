@@ -38,6 +38,8 @@ namespace Shampoo_Meter
         #region Public Methods
         public static int CheckForNewFiles()
         { 
+            //TODO: Current code returns number larger than zero, so that application can continue
+            //Still need to add the code that actually checks for new files.
             int count = 0;
             count++;
             return count;
@@ -80,7 +82,6 @@ namespace Shampoo_Meter
             return myList;
         }
         
-
         internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, string pickUpLocation)
         {
             var myList = new List<ClassDataFile>();

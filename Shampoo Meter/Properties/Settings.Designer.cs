@@ -25,13 +25,85 @@ namespace Shampoo_Meter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string InitialConnectionString {
             get {
                 return ((string)(this["InitialConnectionString"]));
             }
             set {
                 this["InitialConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FileLocation {
+            get {
+                return ((string)(this["FileLocation"]));
+            }
+            set {
+                this["FileLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OutputLocation {
+            get {
+                return ((string)(this["OutputLocation"]));
+            }
+            set {
+                this["OutputLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SSISConnectionString {
+            get {
+                return ((string)(this["SSISConnectionString"]));
+            }
+            set {
+                this["SSISConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SSISTemplateLocation {
+            get {
+                return ((string)(this["SSISTemplateLocation"]));
+            }
+            set {
+                this["SSISTemplateLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ConnectionString {
+            get {
+                return ((string)(this["ConnectionString"]));
+            }
+            set {
+                this["ConnectionString"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".csv")]
+        public string LogFileExt {
+            get {
+                return ((string)(this["LogFileExt"]));
+            }
+            set {
+                this["LogFileExt"] = value;
             }
         }
     }
