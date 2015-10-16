@@ -9,8 +9,9 @@ namespace Shampoo_Meter.Classes
 {
     public class ClassDataFile
     {
-        //Private variables
+        #region Private variables
         private int intendedNumberOfLines;
+        private string _Filetype;
         private string _Filename;
         private string _FileExtension;
         private string _Location;
@@ -18,27 +19,34 @@ namespace Shampoo_Meter.Classes
         private int _AmountOfLines;
         private string _Day;
         private string _Month;
+        private string _Year;
         private string _MonthName;
         private string _FileNumber;
+        #endregion
 
-        //Porperties
         #region Properties
-        public string FileName 
-        { 
-            get{return _Filename;}
-            set{_Filename = value;} 
+
+        public string FileType
+        {
+            get { return _Filetype; }
+            set { _Filetype = value; }
+        }
+        public string FileName
+        {
+            get { return _Filename; }
+            set { _Filename = value; }
         }
 
-        public string FileExtension 
+        public string FileExtension
         {
-            get { return _FileExtension;}
-            set { _FileExtension = value;} 
+            get { return _FileExtension; }
+            set { _FileExtension = value; }
         }
 
-        public string Location 
+        public string Location
         {
-            get { return _Location;}
-            set { _Location = value;} 
+            get { return _Location; }
+            set { _Location = value; }
         }
 
         public string NewLocation
@@ -47,22 +55,22 @@ namespace Shampoo_Meter.Classes
             set { _NewLocation = value; }
         }
 
-        public int AmountOfLines 
+        public int AmountOfLines
         {
-            get { return _AmountOfLines;}
-            set { _AmountOfLines = value;} 
+            get { return _AmountOfLines; }
+            set { _AmountOfLines = value; }
         }
 
-        public string Day 
+        public string Day
         {
-            get { return _Day;}
-            set { _Day  = value;} 
+            get { return _Day; }
+            set { _Day = value; }
         }
 
-        public string Month 
+        public string Month
         {
-            get { return _Month;}
-            set { _Month = value;} 
+            get { return _Month; }
+            set { _Month = value; }
         }
 
         public string MonthName
@@ -71,28 +79,33 @@ namespace Shampoo_Meter.Classes
             set { _MonthName = value; }
         }
 
-        public string FileNumber 
+        public string Year
         {
-            get { return _FileNumber;}
-            set { _FileNumber = value;} 
+            get { return _Year; }
+            set { _Year = value; }
+        }
+
+        public string FileNumber
+        {
+            get { return _FileNumber; }
+            set { _FileNumber = value; }
         }
         #endregion
 
-        //Constructors
+        #region Constructors
         public ClassDataFile()
         { }
 
         public ClassDataFile(string location)
         {
             int count = 0;
+            string line;
             using (StreamReader sr = new StreamReader(location))
             {
-                string line;
                 line = sr.ReadToEnd();
                 sr.Close();
                 for (int n = 0; n < line.Length; n++) if (line[n] == '*') count++;
             }
-
             this._AmountOfLines = count;
             this._Filename = location.Substring(location.Length - 12, 12);
             this._FileExtension = "dat";
@@ -100,10 +113,13 @@ namespace Shampoo_Meter.Classes
             this._Day = FileName.Substring(2, 2);
             this._Month = FileName.Substring(4, 2);
             this._MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
+            this.Year = "20" + line.Substring(2, 2);
             this.FileNumber = FileName.Substring(6, 2);
+            this._Filetype = FileName.Substring(0, 2);
         }
+        #endregion
 
-        //Methods
+        #region Private Methods
         private string GetMonthName(int monthNumber)
         {
             string name = string.Empty;
@@ -152,5 +168,6 @@ namespace Shampoo_Meter.Classes
 
             return name;
         }
+        #endregion
     }
 }

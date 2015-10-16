@@ -7,33 +7,69 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using Shampoo_Meter.Classes;
+using System.IO;
 
 namespace Shampoo_Meter.DAL
 {
     class ClassSQLAccess
     {
-        public DataTable GetDataTable()
+        #region Public Methods
+        public static DataTable GetDataTable(string connectionString)
         {
             DataTable resultTable = new DataTable();
 
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
-            string sqlQuery = string.Empty;
+
+            sqlConnection.ConnectionString = connectionString;
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("SELECT ");
+            sqlQuery.AppendLine("	[Customer_Name],");
+            sqlQuery.AppendLine("   [APN_Name]");
+            sqlQuery.AppendLine("FROM");
+            sqlQuery.AppendLine("	[APN_DATA].[dbo].[MTN_APN_Name]");
+
+            sqlCommand.CommandText = sqlQuery.ToString();
+            sqlConnection.Open();
+            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            {
+                sqlAdaptor.Fill(resultTable);
+            }
+            sqlConnection.Close();
 
             return resultTable;
         }
 
-        public static int ImportRawData(string fileId, string tableName)
+        public static bool UpdateDataFile(string tableName, string connectionString)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.CommandText = BuildUpdateDataFileQuery(tableName);
+            sqlConnection.Open();
+            int count = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+
+            bool _result = (count >=1) ? true : false;
+
+            return _result;
+        }
+
+        public static int ImportRawData(string fileId, string tableName, string connectionString)
         {
             tableName = tableName.Remove(8, tableName.Length - 8);
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+            sqlConnection.ConnectionString = connectionString;
             sqlCommand.Connection = sqlConnection;
 
-            sqlCommand.CommandText = BuildImportRawdataQuery(fileId,tableName);
+            sqlCommand.CommandText = BuildImportRawdataQuery(fileId, tableName);
             sqlConnection.Open();
             int count = sqlCommand.ExecuteNonQuery();
             sqlConnection.Close();
@@ -41,7 +77,7 @@ namespace Shampoo_Meter.DAL
             return count;
         }
 
-        public static DataTable InsertNewFileId(ClassDataFile[] dataFiles)
+        public static DataTable InsertNewFileId(ClassDataFile[] dataFiles, string connectionString)
         {
             DataTable pTable = new DataTable();
             int fileCount = 1;
@@ -49,7 +85,7 @@ namespace Shampoo_Meter.DAL
             SqlConnection sqlConnection = new SqlConnection();
             SqlCommand sqlCommand = new SqlCommand();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
+            sqlConnection.ConnectionString = connectionString;
 
             StringBuilder sqlQuery = new StringBuilder();
 
@@ -59,7 +95,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded)");
             sqlQuery.AppendLine("   VALUES");
 
-            foreach(ClassDataFile newDataFile in dataFiles)
+            foreach (ClassDataFile newDataFile in dataFiles)
             {
                 sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()),");
                 if (fileCount == (dataFiles.Count()))
@@ -91,6 +127,46 @@ namespace Shampoo_Meter.DAL
             return pTable;
         }
 
+        public static void CreateCMFile(string apnName, int beginFileId, int endFileId, string connectionString)
+        {
+            try
+            {
+                SqlConnection sqlConnection = new SqlConnection();
+                SqlCommand sqlCommand = new SqlCommand();
+                DataTable pTable = new DataTable();
+
+                sqlConnection.ConnectionString = connectionString;
+                sqlCommand.Connection = sqlConnection;
+
+                sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
+                sqlConnection.Open();
+                using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+                {
+                    sqlAdaptor.Fill(pTable);
+                }
+                sqlConnection.Close();
+
+                //• TODO alter the file location to be writen to:
+                using (StreamWriter sw = File.CreateText("C:\\New CM Data files\\MTN_APN_BON.txt"))
+                {
+                    foreach (DataRow CDRrow in pTable.Rows)
+                    {
+                        foreach (var field in CDRrow.ItemArray)
+                        {
+                            sw.Write(field.ToString() + "\t");
+                        }
+                        sw.WriteLine();
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        #region Private Methods
         private static string BuildImportRawdataQuery(string fileId, string tableName)
         {
             StringBuilder sqlQuery = new StringBuilder();
@@ -156,7 +232,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 11] AS 'Call_Sequence',");
             sqlQuery.AppendLine("           [Column 12] AS 'Called_Number',");
             sqlQuery.AppendLine("           [Column 13] AS 'Target_Network',");
-            sqlQuery.AppendLine("           [Column 14] AS 'Filler_1',");
+            sqlQuery.AppendLine("--         [Column 14] AS 'Filler_1',");
             sqlQuery.AppendLine("           [Column 15] AS 'GEO_Source',");
             sqlQuery.AppendLine("           [Column 16] AS 'GEO_Destination',");
             sqlQuery.AppendLine("           [Column 17] AS 'Call_Cost',");
@@ -172,31 +248,35 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("           [Column 27] AS 'TAP_MOC_Surcharge',");
             sqlQuery.AppendLine("           [Column 28] AS 'GSM_Code',");
             sqlQuery.AppendLine("           [Column 29] AS 'Distance_Related',");
-            sqlQuery.AppendLine("           [Column 30] AS 'Filler_2',");
+            sqlQuery.AppendLine("--         [Column 30] AS 'Filler_2',");
             sqlQuery.AppendLine("           [Column 31] AS 'Price_Plan',");
             sqlQuery.AppendLine("           [Column 32] AS 'IMEI',");
             sqlQuery.AppendLine("           [Column 33] AS 'VAS_Description',");
             sqlQuery.AppendLine("           [Column 34] AS 'GPRS_Used',");
             sqlQuery.AppendLine("           [Column 35] AS 'Information_Flag',");
             sqlQuery.AppendLine("           [Column 36] AS 'VPN_Short_Dial',");
-            sqlQuery.AppendLine("           [Column 37] AS 'VAS_Partner_Id'");
+            sqlQuery.AppendLine("           [Column 37] AS 'VAS_Partner_Id',");
+            sqlQuery.AppendLine("           [Column 38] AS 'VAS_Content_Id',");
+            sqlQuery.AppendLine("           [Column 39] AS 'VAS_Content_TO_Id'--,");
+            sqlQuery.AppendLine("--		    [Column 40] AS 'Filler_3',");
+            sqlQuery.AppendLine("--		    [Column 41] AS 'End_Marker'");
             sqlQuery.AppendLine("	FROM");
             sqlQuery.AppendLine("   		dbo.[" + tableName + "]");
 
             return sqlQuery.ToString();
         }
 
-        public static string CreateCMFile(string apnName, int beginFileId, int endFileId)
+        private static string BuildUpdateDataFileQuery(string fileId)
         {
-            SqlConnection sqlConnection = new SqlConnection();
-            SqlCommand sqlCommand = new SqlCommand();
+            StringBuilder sqlQuery = new StringBuilder();
 
-            sqlConnection.ConnectionString = "Data Source=(local);Integrated Security=SSPI;Persist Security Info=False;";
-            sqlCommand.Connection = sqlConnection;
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("UPDATE [dbo].[MTN_APN_Data_File]");
+            sqlQuery.AppendLine("SET Date_Completed = GETDATE()");
+            sqlQuery.AppendLine("WHERE ID = " + fileId);
 
-            sqlCommand.CommandText = BuildAPNDataFileForCMQuery(apnName, beginFileId, endFileId);
-            sqlConnection.Open();
-            return string.Empty;
+            return sqlQuery.ToString();
         }
 
         private static string BuildAPNDataFileForCMQuery(string apnName, int beginFileId, int endFileId)
@@ -224,5 +304,6 @@ namespace Shampoo_Meter.DAL
 
             return sqlQuery.ToString();
         }
+        #endregion
     }
 }
