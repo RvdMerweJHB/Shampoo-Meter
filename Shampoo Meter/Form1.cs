@@ -45,7 +45,7 @@ namespace Shampoo_Meter
         {
             string pickUpPath = Properties.Settings.Default.FileLocation;
 
-            if (pickUpPath == "Please Supply...")
+            if (pickUpPath == string.Empty || pickUpPath == "")
             {
                 MessageBox.Show("Pick Up Location not Supplied");
             }
@@ -89,7 +89,7 @@ namespace Shampoo_Meter
         {
             string outputPath = Properties.Settings.Default.OutputLocation;
 
-            if (outputPath == "Please Supply...")
+            if (outputPath == string.Empty || outputPath == "")
             {
                 MessageBox.Show("Connection String not Supplied");
             }
@@ -122,7 +122,7 @@ namespace Shampoo_Meter
             //1.CHECK IF .dtsx FILE EXISTS
             try
             {
-                if (SSISTemplateLocation != "Please select..." || SSISConnectionString != "Please select...")
+                if ((SSISTemplateLocation != string.Empty || SSISTemplateLocation == "") || (SSISConnectionString != string.Empty || SSISConnectionString == ""))
                 {
                     foreach (Classes.ClassDataFile file in this.FileList)
                     {
@@ -151,7 +151,7 @@ namespace Shampoo_Meter
         {
             string connectionString = Properties.Settings.Default.ConnectionString;
 
-            if (connectionString == "Please Supply...")
+            if (connectionString == string.Empty || connectionString == "")
             {
                 MessageBox.Show("Connection String not Supplied");
             }
@@ -194,7 +194,7 @@ namespace Shampoo_Meter
         {
             string connectionString = Properties.Settings.Default.ConnectionString;
 
-            if (connectionString == "Please Supply...")
+            if (connectionString == string.Empty || connectionString == "")
             {
                 MessageBox.Show("Connection String not Supplied");
             }
