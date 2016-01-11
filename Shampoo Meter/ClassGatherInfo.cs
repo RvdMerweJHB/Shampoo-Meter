@@ -81,14 +81,13 @@ namespace Shampoo_Meter
             //string testMessage = excelObj.ReadTableFromExcel(pickUpLocation + fileName);
             return myList;
         }
-        
-        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, string pickUpLocation)
+
+        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation)
         {
             var myList = new List<ClassDataFile>();
-            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
             //TODO: Use path speciefied in settings to find new .dat files:
             //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
+            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the excel file.
             String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
@@ -96,12 +95,25 @@ namespace Shampoo_Meter
             foreach (String fileLoc in filePaths)
             {
                 ClassDataFile file = new ClassDataFile(fileLoc);
-                infoTable.AddNewRow(file, ref infoTable);
                 datFiles[count] = new ClassDataFile(filePaths[count]);
                 myList.Add(datFiles[count]);
                 count++;
             }
 
+            return myList;
+        }
+        
+        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, List<ClassDataFile> myList)
+        {
+            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
+            //TODO: Use path speciefied in settings to find new .dat files:
+            //1.Call latestExistingFile method to find out latest name in db.
+            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
+
+            //•§THIS SECTION BELOW STILL NEEDS TO BE FIXED§•
+            ClassDataFile file = new ClassDataFile(fileLoc);
+            infoTable.AddNewRow(file, ref infoTable);
+            
             //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
             //ClassCSVTools CSVObj = new ClassCSVTools();
             //string message = CSVObj.SaveTableToCSV(infoTable, pickUpLocation, fileName);

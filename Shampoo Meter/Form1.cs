@@ -56,6 +56,8 @@ namespace Shampoo_Meter
                 string fileName = string.Empty;
                 string fileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
 
+                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath);
+
                 //• WRITE NEW .dat FILE INFO TO EXCEL
                 try
                 {
