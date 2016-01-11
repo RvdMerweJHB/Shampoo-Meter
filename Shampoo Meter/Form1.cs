@@ -26,7 +26,7 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MessageBox.Show("TODO:Update Filename table when importraw data has fininshed. DAL?? Then also problem of moving files if they already exist. Relook at classtools move files");
+            //MessageBox.Show("Then also problem of moving files if they already exist. Relook at classtools move files");
             try
             {
                 DataTable apnClients = new DataTable();
@@ -56,8 +56,6 @@ namespace Shampoo_Meter
                 string fileName = string.Empty;
                 string fileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
 
-                //TODO: User should be informed if all the new files are intact.
-
                 //• WRITE NEW .dat FILE INFO TO EXCEL
                 try
                 {
@@ -82,6 +80,9 @@ namespace Shampoo_Meter
                 {
                     MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
+                //• At this point the files in the list should be checked if they are intact or not.
+                //TODO: User should be informed if all the new files are intact.
             }
         }
 
@@ -184,7 +185,7 @@ namespace Shampoo_Meter
                 {
                     MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
                 }
-                //TODO: Update excel file with status 
+                //TODO: Update excel file with status s 
 
                 MessageBox.Show("There has been " + successfullImports + " tables imported into MTN_APN_DATA table");
             }
