@@ -26,32 +26,23 @@ namespace Shampoo_Meter.DataTables
             DataTable infoTable = new DataTable();
 
             DataColumn nameCol = new DataColumn();
-            DataColumn linesCol = new DataColumn();
-            DataColumn afterSSISCol = new DataColumn();
-            DataColumn tableIdCol = new DataColumn();
-            DataColumn finalStatudCol = new DataColumn();
+            DataColumn resultCol = new DataColumn();
 
-            nameCol.ColumnName = "File Name";
-            linesCol.ColumnName = "Lines";
-            afterSSISCol.ColumnName = "Status after SSIS package";
-            tableIdCol.ColumnName = "Table Id";
-            finalStatudCol.ColumnName = "Final Status";
+            nameCol.ColumnName = "File_Name";
+            resultCol.ColumnName = "Result";
 
             infoTable.Columns.Add(nameCol);
-            infoTable.Columns.Add(linesCol);
-            infoTable.Columns.Add(afterSSISCol);
-            infoTable.Columns.Add(tableIdCol);
-            infoTable.Columns.Add(finalStatudCol);
+            infoTable.Columns.Add(resultCol);
 
             this._InfoTable = infoTable;
         }
         
         //Methods
-        public void AddNewRow(ClassDataFile dataFile, ref ClassImportInfoDataTable infoTable)
+        public void AddNewRow(ClassDataFile dataFile, string result, ref ClassImportInfoDataTable infoTable)
         {
             DataRow newRow = infoTable.infoTable.NewRow();
-            newRow["File Name"] = dataFile.FileName;
-            newRow["Lines"] = dataFile.AmountOfLines;
+            newRow["File_Name"] = dataFile.FileName;
+            newRow["Result"] = result;
             infoTable.infoTable.Rows.Add(newRow);
             infoTable.infoTable.AcceptChanges();
         }

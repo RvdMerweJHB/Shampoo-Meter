@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Shampoo_Meter.Classes;
 
 namespace Shampoo_Meter
 {
     public partial class Form1 : Form
     {
-        private List<Classes.ClassDataFile> _FileList;
-        public List<Classes.ClassDataFile> FileList
+        private List<ClassDataFile> _FileList;
+        public List<ClassDataFile> FileList
         {
             get { return _FileList; }
             set { _FileList = value; }
@@ -53,38 +54,38 @@ namespace Shampoo_Meter
             {
                 //• CHECK FOR NEW .dat FILES
                 int newFiles = ClassGatherInfo.CheckForNewFiles();
+
                 string fileName = string.Empty;
                 string fileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
 
-                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath);
+                //• RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
+                ClassAuditFile auditFile = new ClassAuditFile(@"C:\reportsservice\1020160110.SP_LOG");
 
-                //• WRITE NEW .dat FILE INFO TO EXCEL
-                try
+                DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
+                entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
+
+                if (entriesTable.entriesTable.Rows.Count != 0)
                 {
-                    fileName = ClassGatherInfo.DetermineFileName(fileExtention);
-                    if (newFiles >= 1)
+                    DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
+                    try
                     {
-                        switch (fileExtention)
-                        {
-                            case ".csv":
-                                this.FileList = ClassGatherInfo.WriteNewFilesToCSV(fileName, pickUpPath);
-                                break;
-                            case ".xlsx":
-                                this.FileList = ClassGatherInfo.WriteNewFilesToExcel(fileName, pickUpPath);
-                                break;
-                        }
+                        this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, entriesTable, ref infoTable);
+                        lbl2.Enabled = true;
+                        btnMoveFiles.Enabled = true;
+                        MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    lbl2.Enabled = true;
-                    btnMoveFiles.Enabled = true;
-                    MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
-                //• At this point the files in the list should be checked if they are intact or not.
-                //TODO: User should be informed if all the new files are intact.
+                    Classes.ClassCSVTools.SaveTableToCSV(infoTable,"C:\\Data\\","Log.csv");
+
+                }
+                else
+                {
+                    MessageBox.Show("No audit entries has been found, are you using the right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

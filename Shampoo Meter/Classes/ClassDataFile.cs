@@ -106,7 +106,7 @@ namespace Shampoo_Meter.Classes
                 sr.Close();
                 for (int n = 0; n < line.Length; n++) if (line[n] == '*') count++;
             }
-            this._AmountOfLines = count;
+            this._AmountOfLines = count -1 ;
             this._Filename = location.Substring(location.Length - 12, 12);
             this._FileExtension = "dat";
             this._Location = location;

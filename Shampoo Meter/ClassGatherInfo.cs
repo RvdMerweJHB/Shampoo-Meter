@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,23 +19,7 @@ namespace Shampoo_Meter
         //4.Verify that the amount of lines correspond with the amount indicated in last line.
         //5.Write this number to the ImportInfo file.
 
-        //Private variables
-
-        //Porperties
-
-        //Constructors
-
         //Methods
-        #region Private Methods
-        private string LatestExistingFile()
-        {
-            
-            string previousFileName = string.Empty;
-            //TODO: Locate the latest file name from Database
-            return previousFileName;
-        }
-        #endregion
-
         #region Public Methods
         public static int CheckForNewFiles()
         { 
@@ -55,39 +40,10 @@ namespace Shampoo_Meter
             return resultName + fileExtention;
         }
 
-        public static List<ClassDataFile> WriteNewFilesToExcel(string fileName, string pickUpLocation)
+        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation, ClassAuditEntriesDataTable auditEntries, ref DataTables.ClassImportInfoDataTable infoTable)
         {
-            var myList = new List<ClassDataFile>();
-            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
-            //TODO: Use path speciefied in settings to find new .dat files:
-            //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the excel file.
-            String[] filePaths = Directory.GetFiles(pickUpLocation);
-            ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
-            int count = 0;
-            
-            foreach(String fileLoc in filePaths)
-            {
-                ClassDataFile file = new ClassDataFile(fileLoc);
-                infoTable.AddNewRow(file, ref infoTable);
-                datFiles[count] = new ClassDataFile(filePaths[count]);
-                myList.Add(datFiles[count]);
-                count++;
-            }
+            List<ClassDataFile> fileList = new List<ClassDataFile>();
 
-            //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            //ClassExcelTools excelObj = new ClassExcelTools();
-            //string message = excelObj.SaveTableToExcel(infoTable, pickUpLocation, fileName);
-            //string testMessage = excelObj.ReadTableFromExcel(pickUpLocation + fileName);
-            return myList;
-        }
-
-        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation)
-        {
-            var myList = new List<ClassDataFile>();
-            //TODO: Use path speciefied in settings to find new .dat files:
-            //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the excel file.
             String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
@@ -96,29 +52,49 @@ namespace Shampoo_Meter
             {
                 ClassDataFile file = new ClassDataFile(fileLoc);
                 datFiles[count] = new ClassDataFile(filePaths[count]);
-                myList.Add(datFiles[count]);
+
+                string message = VerifyFileIntact(datFiles[count], auditEntries);
+                if (message == "Successful")
+                {
+                    fileList.Add(datFiles[count]);
+                }
+                infoTable.AddNewRow(datFiles[count], message, ref infoTable);
                 count++;
             }
 
-            return myList;
+            return fileList;
         }
-        
-        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, List<ClassDataFile> myList)
+        #endregion
+
+        #region Private methods
+        private string LatestExistingFile()
         {
-            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
-            //TODO: Use path speciefied in settings to find new .dat files:
-            //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
 
-            //•§THIS SECTION BELOW STILL NEEDS TO BE FIXED§•
-            ClassDataFile file = new ClassDataFile(fileLoc);
-            infoTable.AddNewRow(file, ref infoTable);
-            
-            //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            //ClassCSVTools CSVObj = new ClassCSVTools();
-            //string message = CSVObj.SaveTableToCSV(infoTable, pickUpLocation, fileName);
+            string previousFileName = string.Empty;
+            //TODO: Locate the latest file name from Database
+            return previousFileName;
+        }
 
-            return myList;
+        private static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries)
+        {
+            string message = "Not successful. No Audit entry found for this file";
+            foreach (DataRow dr in auditEntries.entriesTable.Rows)
+            {
+                if (dr["FileName"].ToString() == datFile.FileName.Substring(0, 8))
+                {
+                    if (Convert.ToInt16(dr["CDR_Count"]) == datFile.AmountOfLines)
+                    {
+                        message = "Successful";
+                        break;
+                    }
+                    else
+                    {
+                        message = "Not Successful. File is not intact -CDR's do not match-";
+                        break;
+                    }
+                }
+            }
+            return message;
         }
         #endregion
     }

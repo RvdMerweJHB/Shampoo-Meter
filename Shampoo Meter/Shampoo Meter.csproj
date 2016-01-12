@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClassAuditFile.cs" />
     <Compile Include="Classes\ClassCSVTools.cs" />
     <Compile Include="Classes\ClassDataFile.cs" />
     <Compile Include="Classes\ClassExcelTools.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="ClassGatherInfo.cs" />
     <Compile Include="ClassTools.cs" />
     <Compile Include="DAL\ClassSQLAccess.cs" />
+    <Compile Include="DataTables\ClassAuditEntriesDataTable.cs" />
     <Compile Include="DataTables\ClassImportInfoDataTable.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
