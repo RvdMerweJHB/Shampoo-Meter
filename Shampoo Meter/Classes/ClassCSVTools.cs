@@ -49,7 +49,7 @@ namespace Shampoo_Meter.Classes
 
             try
             {
-                StreamWriter sw = new StreamWriter(csvFilePath + fileName, false);
+                StreamWriter sw = new StreamWriter(csvFilePath + "\\" + fileName, false);
 
                 for (int i = 0; i < columns; i++)
                 {

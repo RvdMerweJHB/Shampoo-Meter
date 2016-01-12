@@ -24,6 +24,9 @@ namespace Shampoo_Meter
             txtSSISConnectionString.Text = Properties.Settings.Default.SSISConnectionString;
             txtSSISTemplateLocation.Text = Properties.Settings.Default.SSISTemplateLocation;
             txtConnectionString.Text = Properties.Settings.Default.ConnectionString;
+
+            txtAuditFileLocation.Text = Properties.Settings.Default.AuditFileLocation;
+            txtLogFileLocation.Text = Properties.Settings.Default.LogFileDir;
             string fileExtention = Properties.Settings.Default.LogFileExt;
 
             switch(fileExtention)
@@ -58,6 +61,20 @@ namespace Shampoo_Meter
             txtSSISTemplateLocation.Text = dlgFileLocationBrowser.FileName.ToString();
         }
 
+        private void btnLocateAuditFile_Click(object sender, EventArgs e)
+        {
+            dlgFileLocationBrowser.ShowDialog();
+            Properties.Settings.Default.AuditFileLocation = dlgFileLocationBrowser.FileName.ToString();
+            txtAuditFileLocation.Text = dlgFileLocationBrowser.FileName.ToString();
+        }
+
+        private void btnLocateLogFileDir_Click(object sender, EventArgs e)
+        {
+            dlgFolderLocationBrowser.ShowDialog();
+            Properties.Settings.Default.LogFileDir = dlgFolderLocationBrowser.SelectedPath.ToString();
+            txtLogFileLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
+        }
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.FileLocation = txtFileLocation.Text;
@@ -65,6 +82,9 @@ namespace Shampoo_Meter
             Properties.Settings.Default.SSISConnectionString = txtSSISConnectionString.Text;
             Properties.Settings.Default.SSISTemplateLocation = txtSSISTemplateLocation.Text; 
             Properties.Settings.Default.ConnectionString = txtConnectionString.Text;
+
+            Properties.Settings.Default.AuditFileLocation = txtAuditFileLocation.Text;
+            Properties.Settings.Default.LogFileDir = txtLogFileLocation.Text;
             Properties.Settings.Default.LogFileExt = (radCsv.Checked == true) ? ".csv" : ".xlsx";
             Properties.Settings.Default.Save();
             Close();

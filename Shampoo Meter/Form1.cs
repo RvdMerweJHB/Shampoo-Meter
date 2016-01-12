@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Shampoo_Meter.Classes;
+using Shampoo_Meter.DataTables;
 
 namespace Shampoo_Meter
 {
@@ -27,7 +28,6 @@ namespace Shampoo_Meter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MessageBox.Show("Then also problem of moving files if they already exist. Relook at classtools move files");
             try
             {
                 DataTable apnClients = new DataTable();
@@ -55,11 +55,9 @@ namespace Shampoo_Meter
                 //• CHECK FOR NEW .dat FILES
                 int newFiles = ClassGatherInfo.CheckForNewFiles();
 
-                string fileName = string.Empty;
-                string fileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
-
                 //• RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
-                ClassAuditFile auditFile = new ClassAuditFile(@"C:\reportsservice\1020160110.SP_LOG");
+                string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
+                ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
 
                 DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
                 entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
@@ -67,6 +65,10 @@ namespace Shampoo_Meter
                 if (entriesTable.entriesTable.Rows.Count != 0)
                 {
                     DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
+                    string logFileLoc = Properties.Settings.Default.LogFileDir;
+                    string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
+                    string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
+
                     try
                     {
                         this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, entriesTable, ref infoTable);
@@ -79,8 +81,7 @@ namespace Shampoo_Meter
                         MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    Classes.ClassCSVTools.SaveTableToCSV(infoTable,"C:\\Data\\","Log.csv");
-
+                    ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
                 }
                 else
                 {

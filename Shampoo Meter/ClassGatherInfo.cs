@@ -36,7 +36,7 @@ namespace Shampoo_Meter
             DateTime date = new DateTime();
             date = DateTime.Now;
 
-            resultName = date.ToString("MMMMMM");
+            resultName = date.ToString("dd") + "_" + date.ToString("MMMMMM") + "_" + date.ToString("yyyy");
             return resultName + fileExtention;
         }
 
@@ -89,7 +89,7 @@ namespace Shampoo_Meter
                     }
                     else
                     {
-                        message = "Not Successful. File is not intact -CDR's do not match-";
+                        message = "Not Successful. File is not complete:CDR MISMATCH";
                         break;
                     }
                 }
