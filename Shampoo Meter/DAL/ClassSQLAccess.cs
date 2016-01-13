@@ -77,6 +77,26 @@ namespace Shampoo_Meter.DAL
             return count;
         }
 
+        public static DataTable SelectInCompletesAudits(string connectionString, DataTables.ClassAuditEntriesDataTable entriesTable)
+        {
+            DataTable _resultTable = new DataTable();
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+            
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+
+            sqlCommand.CommandText = BuildSelectInCompleteAuditsQuery(entriesTable);
+            sqlConnection.Open();
+            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            {
+                sqlAdaptor.Fill(_resultTable);
+            }
+            sqlConnection.Close();
+
+            return _resultTable;
+        }
+
         public static DataTable InsertNewFileId(ClassDataFile[] dataFiles, string connectionString)
         {
             DataTable pTable = new DataTable();
@@ -263,6 +283,41 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("	FROM");
             sqlQuery.AppendLine("   		dbo.[" + tableName + "]");
 
+            return sqlQuery.ToString();
+        }
+
+        private static string BuildSelectInCompleteAuditsQuery(DataTables.ClassAuditEntriesDataTable entriesTable)
+        {
+            StringBuilder sqlQuery = new StringBuilder();
+            int entriesCount = 1;
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("SELECT ");
+            sqlQuery.AppendLine("	   [ID],");
+            sqlQuery.AppendLine("      [File_Name],");
+            sqlQuery.AppendLine("      [Date_Uploaded],");
+            sqlQuery.AppendLine("      [Date_Completed],");
+            sqlQuery.AppendLine("      [Actual_CDR_Amount],");
+            sqlQuery.AppendLine("      [Self_Check_CDR_Amount]");
+            sqlQuery.AppendLine("FROM");
+            sqlQuery.AppendLine("	[dbo].[MTN_APN_Data_File]");
+            sqlQuery.AppendLine("WHERE");
+            sqlQuery.AppendLine("	Audit_File_CDR_Amount IS NULL");
+            sqlQuery.AppendLine("	AND [File_Name] IN");
+            sqlQuery.AppendLine("	(");
+
+            foreach (DataRow dr in entriesTable.entriesTable.Rows)
+            {
+                sqlQuery.AppendLine("   '" + dr["FileName"] + "' + '.dat',");
+                if (entriesCount == entriesTable.entriesTable.Rows.Count)
+                {
+                    sqlQuery = sqlQuery.Remove(sqlQuery.Length - 3, 1);
+                }
+                else
+                    entriesCount++;
+            }
+
+            sqlQuery.AppendLine("	)");
             return sqlQuery.ToString();
         }
 

@@ -75,7 +75,7 @@ namespace Shampoo_Meter
             return previousFileName;
         }
 
-        private static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries)
+        public static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries)
         {
             string message = "Not successful. No Audit entry found for this file";
             foreach (DataRow dr in auditEntries.entriesTable.Rows)

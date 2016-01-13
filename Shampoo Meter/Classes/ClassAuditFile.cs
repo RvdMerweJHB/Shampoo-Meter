@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shampoo_Meter.DataTables;
 
 namespace Shampoo_Meter.Classes
 {
@@ -54,12 +55,35 @@ namespace Shampoo_Meter.Classes
         #endregion
 
         #region Public Methods
-        public static DataTable FillAuditEntries(ClassAuditFile auditFile)
+        public static bool CheckForInCompleteAudits(string connectionString, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
         {
-            DataTable _dt = new DataTable();
-            return _dt;
+            DataTable _resultTable = new DataTable();
+            _resultTable = DAL.ClassSQLAccess.SelectInCompletesAudits(connectionString, entriesTable);
+
+            if (_resultTable.Rows.Count >= 1)
+                UpdateInCompleteAudits(_resultTable, entriesTable, ref infoTable);
+
+            return true;
         }
 
+        public static void UpdateInCompleteAudits(DataTable table, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
+        {
+            List<ClassDataFile> updateList = new List<ClassDataFile>();
+            string message;
+            foreach (DataRow dataRow in table.Rows)
+            {
+                ClassDataFile datFile = new ClassDataFile(dataRow);
+                message = ClassGatherInfo.VerifyFileIntact(datFile, entriesTable);
+
+                if (message == "Successful")
+                {
+                    updateList.Add(datFile);
+                }
+                infoTable.AddNewRow(datFile, "Incomplete Audit Entry Found:Result" + message, ref infoTable);
+            }
+
+            DAL.ClassSQLAccess.UpdateIncompleteAudits(updateList);
+        }
         #endregion
 
         #region Private Methods

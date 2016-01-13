@@ -45,6 +45,7 @@ namespace Shampoo_Meter
         private void btnFindFiles_Click(object sender, EventArgs e)
         {
             string pickUpPath = Properties.Settings.Default.FileLocation;
+            DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
 
             if (pickUpPath == string.Empty || pickUpPath == "")
             {
@@ -52,42 +53,52 @@ namespace Shampoo_Meter
             }
             else
             {
-                //• IF REQUIRED, RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
-                string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
-                ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
-                DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
-                entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
+                string auditType = Properties.Settings.Default.AuditType;
 
-                //• BEFORE CHECKING FOR NEW FILES, USE AUDIT ENTRIES TABLE TO SEE IF THERE ARE ANY ROWS IN THE DATABASE THAT NEEDS TO BE AUDITED.
-
-                //• CHECK FOR NEW .dat FILES
-                int newFiles = ClassGatherInfo.CheckForNewFiles();
-
-                if (entriesTable.entriesTable.Rows.Count != 0)
+                switch (auditType)
                 {
-                    DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
-                    string logFileLoc = Properties.Settings.Default.LogFileDir;
-                    string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
-                    string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
+                    case "Full (Use Audit File, and Self Check)":
+                        //• RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
+                        string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
+                        ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
+                        DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
+                        entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
 
-                    try
-                    {
-                        this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, entriesTable, ref infoTable);
-                        lbl2.Enabled = true;
-                        btnMoveFiles.Enabled = true;
-                        MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                        //• BEFORE CHECKING FOR NEW FILES, USE AUDIT ENTRIES TABLE TO SEE IF THERE ARE ANY ROWS IN THE DATABASE THAT NEEDS TO BE AUDITED.
+                        ClassAuditFile.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, entriesTable, ref infoTable);
 
-                    ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
+                        if (entriesTable.entriesTable.Rows.Count != 0)
+                        { 
+                            //• CHECK FOR NEW .dat FILES
+                            int newFiles = ClassGatherInfo.CheckForNewFiles();
+                            string logFileLoc = Properties.Settings.Default.LogFileDir;
+                            string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
+                            string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
+
+                            try
+                            {
+                                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, entriesTable, ref infoTable);
+                                lbl2.Enabled = true;
+                                btnMoveFiles.Enabled = true;
+                                MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+                            ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No audit entries has been found, are you using the right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                        break;
+                    case "Self Check Only":
+                        break;
                 }
-                else
-                {
-                    MessageBox.Show("No audit entries has been found, are you using the right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
             }
         }
 

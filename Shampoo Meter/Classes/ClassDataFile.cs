@@ -36,55 +36,46 @@ namespace Shampoo_Meter.Classes
             get { return _Filename; }
             set { _Filename = value; }
         }
-
         public string FileExtension
         {
             get { return _FileExtension; }
             set { _FileExtension = value; }
         }
-
         public string Location
         {
             get { return _Location; }
             set { _Location = value; }
         }
-
         public string NewLocation
         {
             get { return _NewLocation; }
             set { _NewLocation = value; }
         }
-
         public int AmountOfLines
         {
             get { return _AmountOfLines; }
             set { _AmountOfLines = value; }
         }
-
         public string Day
         {
             get { return _Day; }
             set { _Day = value; }
         }
-
         public string Month
         {
             get { return _Month; }
             set { _Month = value; }
         }
-
         public string MonthName
         {
             get { return _MonthName; }
             set { _MonthName = value; }
         }
-
         public string Year
         {
             get { return _Year; }
             set { _Year = value; }
         }
-
         public string FileNumber
         {
             get { return _FileNumber; }
@@ -96,6 +87,7 @@ namespace Shampoo_Meter.Classes
         public ClassDataFile()
         { }
 
+        //Constuctor using file location string
         public ClassDataFile(string location)
         {
             int count = 0;
@@ -106,16 +98,29 @@ namespace Shampoo_Meter.Classes
                 sr.Close();
                 for (int n = 0; n < line.Length; n++) if (line[n] == '*') count++;
             }
-            this._AmountOfLines = count -1 ;
-            this._Filename = location.Substring(location.Length - 12, 12);
-            this._FileExtension = "dat";
-            this._Location = location;
-            this._Day = FileName.Substring(2, 2);
-            this._Month = FileName.Substring(4, 2);
-            this._MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
+            this.AmountOfLines = count -1 ;
+            this.FileName = location.Substring(location.Length - 12, 12);
+            this.FileExtension = "dat";
+            this.Location = location;
+            this.Day = FileName.Substring(2, 2);
+            this.Month = FileName.Substring(4, 2);
+            this.MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
             this.Year = "20" + line.Substring(2, 2);
             this.FileNumber = FileName.Substring(6, 2);
-            this._Filetype = FileName.Substring(0, 2);
+            this.FileType = FileName.Substring(0, 2);
+        }
+
+        //Constuctor using a datarow
+        public ClassDataFile(System.Data.DataRow dataRow)
+        {
+            this.AmountOfLines = Convert.ToInt32(dataRow["Actual_CDR_Amount"]);
+            this.FileName = dataRow["File_Name"].ToString();
+            this.FileExtension = "dat";
+            this.Day = FileName.Substring(2, 2);
+            this.Month = FileName.Substring(4, 2);
+            this.MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
+            this.FileNumber = FileName.Substring(6, 2);
+            this.FileType = FileName.Substring(0, 2);
         }
         #endregion
 
