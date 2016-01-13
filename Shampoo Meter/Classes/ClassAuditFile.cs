@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shampoo_Meter.DataTables;
+using Shampoo_Meter.DAL;
 
 namespace Shampoo_Meter.Classes
 {
@@ -18,25 +19,21 @@ namespace Shampoo_Meter.Classes
         #endregion 
 
         #region Properties
-
         public string name 
         {
             get { return _name;}
             set { _name = value;} 
         }
-
         public string location 
         {
             get { return _location;}
             set { _location = value;} 
         }
-
         public int entries 
         {
             get { return _entries;}
             set { _entries = value;} 
         }
-
         #endregion
 
         #region Constructors
@@ -58,17 +55,16 @@ namespace Shampoo_Meter.Classes
         public static bool CheckForInCompleteAudits(string connectionString, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
         {
             DataTable _resultTable = new DataTable();
-            _resultTable = DAL.ClassSQLAccess.SelectInCompletesAudits(connectionString, entriesTable);
+            _resultTable = ClassSQLAccess.SelectInCompletesAudits(connectionString, entriesTable);
 
             if (_resultTable.Rows.Count >= 1)
-                UpdateInCompleteAudits(_resultTable, entriesTable, ref infoTable);
+                UpdateInCompleteAudits(_resultTable, entriesTable, ref infoTable, connectionString);
 
             return true;
         }
 
-        public static void UpdateInCompleteAudits(DataTable table, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
+        public static void UpdateInCompleteAudits(DataTable table, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable, string connectionString)
         {
-            List<ClassDataFile> updateList = new List<ClassDataFile>();
             string message;
             foreach (DataRow dataRow in table.Rows)
             {
@@ -77,12 +73,10 @@ namespace Shampoo_Meter.Classes
 
                 if (message == "Successful")
                 {
-                    updateList.Add(datFile);
+                    ClassSQLAccess.UpdateIncompleteAudit(datFile, connectionString);
                 }
                 infoTable.AddNewRow(datFile, "Incomplete Audit Entry Found:Result" + message, ref infoTable);
-            }
-
-            DAL.ClassSQLAccess.UpdateIncompleteAudits(updateList);
+            }           
         }
         #endregion
 

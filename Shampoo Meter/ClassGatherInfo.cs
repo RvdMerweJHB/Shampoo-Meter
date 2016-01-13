@@ -22,7 +22,7 @@ namespace Shampoo_Meter
         //Methods
         #region Public Methods
         public static int CheckForNewFiles()
-        { 
+        {
             //TODO: Current code returns number larger than zero, so that application can continue
             //Still need to add the code that actually checks for new files.
             int count = 0;
@@ -40,7 +40,7 @@ namespace Shampoo_Meter
             return resultName + fileExtention;
         }
 
-        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation, ClassAuditEntriesDataTable auditEntries, ref DataTables.ClassImportInfoDataTable infoTable)
+        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation, ref DataTables.ClassImportInfoDataTable infoTable,ClassAuditEntriesDataTable auditEntries = null)
         {
             List<ClassDataFile> fileList = new List<ClassDataFile>();
 
@@ -53,11 +53,17 @@ namespace Shampoo_Meter
                 ClassDataFile file = new ClassDataFile(fileLoc);
                 datFiles[count] = new ClassDataFile(filePaths[count]);
 
-                string message = VerifyFileIntact(datFiles[count], auditEntries);
-                if (message == "Successful")
-                {
+                string message = string.Empty;
+
+                if (auditEntries == null)
+                    message = VerifyFileIntact(datFiles[count]);
+                else
+                    message = VerifyFileIntact(datFiles[count], auditEntries);
+
+
+                if (message == "AuditFile Check Successful" || message == "Self Check Successful")
                     fileList.Add(datFiles[count]);
-                }
+
                 infoTable.AddNewRow(datFiles[count], message, ref infoTable);
                 count++;
             }
@@ -75,22 +81,34 @@ namespace Shampoo_Meter
             return previousFileName;
         }
 
-        public static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries)
+        public static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries = null)
         {
             string message = "Not successful. No Audit entry found for this file";
-            foreach (DataRow dr in auditEntries.entriesTable.Rows)
+
+            //• Audit Type depends on if the auditEntries table has been supplied or not
+            if (auditEntries == null)
             {
-                if (dr["FileName"].ToString() == datFile.FileName.Substring(0, 8))
+                if(datFile.AmountOfLines == datFile.IntendedAmountOfLines)
+                    message = "Self Check Successful";
+                else
+                    message = "Self Check Not Successful. File is not complete:CDR MISMATCH";
+            }
+            else
+            {
+                foreach (DataRow dr in auditEntries.entriesTable.Rows)
                 {
-                    if (Convert.ToInt16(dr["CDR_Count"]) == datFile.AmountOfLines)
+                    if (dr["FileName"].ToString() == datFile.FileName.Substring(0, 8))
                     {
-                        message = "Successful";
-                        break;
-                    }
-                    else
-                    {
-                        message = "Not Successful. File is not complete:CDR MISMATCH";
-                        break;
+                        if (Convert.ToInt16(dr["CDR_Count"]) == datFile.AmountOfLines)
+                        {
+                            message = "AuditFile Check Successful";
+                            break;
+                        }
+                        else
+                        {
+                            message = "AuditFile Check Not Successful. File is not complete:CDR MISMATCH";
+                            break;
+                        }
                     }
                 }
             }

@@ -77,7 +77,7 @@ namespace Shampoo_Meter
 
                             try
                             {
-                                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, entriesTable, ref infoTable);
+                                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, ref infoTable, entriesTable);
                                 lbl2.Enabled = true;
                                 btnMoveFiles.Enabled = true;
                                 MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -97,6 +97,25 @@ namespace Shampoo_Meter.DAL
             return _resultTable;
         }
 
+        public static bool UpdateIncompleteAudit(ClassDataFile datFile, string connectionString)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+
+            sqlCommand.CommandText = BuildUpdateInCompleteAuditsQuery(datFile);
+            sqlConnection.Open();
+            int count = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+
+            bool _result = (count >= 1) ? true : false;
+
+            return _result;
+
+        }
+
         public static DataTable InsertNewFileId(ClassDataFile[] dataFiles, string connectionString)
         {
             DataTable pTable = new DataTable();
@@ -318,6 +337,20 @@ namespace Shampoo_Meter.DAL
             }
 
             sqlQuery.AppendLine("	)");
+            return sqlQuery.ToString();
+        }
+
+        private static string BuildUpdateInCompleteAuditsQuery(ClassDataFile datFile)
+        {
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("UPDATE [MTN_APN_Data_File]");
+            sqlQuery.AppendLine("SET Audit_File_CDR_Amount = " + datFile.AmountOfLines.ToString());
+            sqlQuery.AppendLine("WHERE");
+            sqlQuery.AppendLine("   ID =" + datFile.MTN_APN_Data_File_ID.ToString());
+
             return sqlQuery.ToString();
         }
 

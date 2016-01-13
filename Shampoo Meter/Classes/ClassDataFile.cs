@@ -17,11 +17,13 @@ namespace Shampoo_Meter.Classes
         private string _Location;
         private string _NewLocation;
         private int _AmountOfLines;
+        private int _IntendedAmountOfLines;
         private string _Day;
         private string _Month;
         private string _Year;
         private string _MonthName;
         private string _FileNumber;
+        private int _MTN_APN_Data_File_ID;
         #endregion
 
         #region Properties
@@ -56,6 +58,11 @@ namespace Shampoo_Meter.Classes
             get { return _AmountOfLines; }
             set { _AmountOfLines = value; }
         }
+        public int IntendedAmountOfLines
+        {
+            get { return _IntendedAmountOfLines; }
+            set { _IntendedAmountOfLines = value; }
+        }
         public string Day
         {
             get { return _Day; }
@@ -81,6 +88,12 @@ namespace Shampoo_Meter.Classes
             get { return _FileNumber; }
             set { _FileNumber = value; }
         }
+        public int MTN_APN_Data_File_ID 
+        {
+            get { return _MTN_APN_Data_File_ID; }
+            set { _MTN_APN_Data_File_ID = value; } 
+        }
+
         #endregion
 
         #region Constructors
@@ -99,6 +112,7 @@ namespace Shampoo_Meter.Classes
                 for (int n = 0; n < line.Length; n++) if (line[n] == '*') count++;
             }
             this.AmountOfLines = count -1 ;
+            this.IntendedAmountOfLines = 2;
             this.FileName = location.Substring(location.Length - 12, 12);
             this.FileExtension = "dat";
             this.Location = location;
@@ -121,6 +135,7 @@ namespace Shampoo_Meter.Classes
             this.MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
             this.FileNumber = FileName.Substring(6, 2);
             this.FileType = FileName.Substring(0, 2);
+            this.MTN_APN_Data_File_ID = Convert.ToInt32(dataRow["ID"]);
         }
         #endregion
 
