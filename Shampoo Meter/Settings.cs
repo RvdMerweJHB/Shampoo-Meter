@@ -25,11 +25,11 @@ namespace Shampoo_Meter
             txtSSISTemplateLocation.Text = Properties.Settings.Default.SSISTemplateLocation;
             txtConnectionString.Text = Properties.Settings.Default.ConnectionString;
 
+            cmbAuditType.SelectedIndex = cmbAuditType.Items.IndexOf(Properties.Settings.Default.AuditType);
             txtAuditFileLocation.Text = Properties.Settings.Default.AuditFileLocation;
             txtLogFileLocation.Text = Properties.Settings.Default.LogFileDir;
-            string fileExtention = Properties.Settings.Default.LogFileExt;
 
-            switch(fileExtention)
+            switch (Properties.Settings.Default.LogFileExt)
             {
                 case ".csv":
                     radCsv.Checked = true;
@@ -83,6 +83,7 @@ namespace Shampoo_Meter
             Properties.Settings.Default.SSISTemplateLocation = txtSSISTemplateLocation.Text; 
             Properties.Settings.Default.ConnectionString = txtConnectionString.Text;
 
+            Properties.Settings.Default.AuditType = cmbAuditType.SelectedItem.ToString();
             Properties.Settings.Default.AuditFileLocation = txtAuditFileLocation.Text;
             Properties.Settings.Default.LogFileDir = txtLogFileLocation.Text;
             Properties.Settings.Default.LogFileExt = (radCsv.Checked == true) ? ".csv" : ".xlsx";

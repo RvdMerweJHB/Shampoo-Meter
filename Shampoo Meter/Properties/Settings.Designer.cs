@@ -130,5 +130,17 @@ namespace Shampoo_Meter.Properties {
                 this["AuditFileLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AuditType {
+            get {
+                return ((string)(this["AuditType"]));
+            }
+            set {
+                this["AuditType"] = value;
+            }
+        }
     }
 }

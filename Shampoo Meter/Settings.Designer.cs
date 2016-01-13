@@ -48,14 +48,15 @@
             this.dlgFolderLocationBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.dlgFileLocationBrowser = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lblAuditFIleLocation = new System.Windows.Forms.Label();
-            this.txtAuditFileLocation = new System.Windows.Forms.TextBox();
-            this.btnLocateAuditFile = new System.Windows.Forms.Button();
-            this.lblLogFileLocation = new System.Windows.Forms.Label();
-            this.txtLogFileLocation = new System.Windows.Forms.TextBox();
-            this.btnLocateLogFileDir = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnLocateLogFileDir = new System.Windows.Forms.Button();
+            this.txtLogFileLocation = new System.Windows.Forms.TextBox();
+            this.lblLogFileLocation = new System.Windows.Forms.Label();
+            this.btnLocateAuditFile = new System.Windows.Forms.Button();
+            this.txtAuditFileLocation = new System.Windows.Forms.TextBox();
+            this.lblAuditFIleLocation = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cmbAuditType = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -192,7 +193,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(64, 106);
+            this.label6.Location = new System.Drawing.Point(67, 106);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(77, 13);
             this.label6.TabIndex = 37;
@@ -223,6 +224,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cmbAuditType);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnLocateLogFileDir);
             this.groupBox1.Controls.Add(this.txtLogFileLocation);
@@ -239,6 +241,69 @@
             this.groupBox1.TabIndex = 53;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Audit Settings";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(82, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 13);
+            this.label1.TabIndex = 56;
+            this.label1.Text = "Audit Type:";
+            // 
+            // btnLocateLogFileDir
+            // 
+            this.btnLocateLogFileDir.Location = new System.Drawing.Point(520, 81);
+            this.btnLocateLogFileDir.Name = "btnLocateLogFileDir";
+            this.btnLocateLogFileDir.Size = new System.Drawing.Size(24, 20);
+            this.btnLocateLogFileDir.TabIndex = 55;
+            this.btnLocateLogFileDir.Text = "...";
+            this.btnLocateLogFileDir.UseVisualStyleBackColor = true;
+            this.btnLocateLogFileDir.Click += new System.EventHandler(this.btnLocateLogFileDir_Click);
+            // 
+            // txtLogFileLocation
+            // 
+            this.txtLogFileLocation.Location = new System.Drawing.Point(147, 78);
+            this.txtLogFileLocation.Name = "txtLogFileLocation";
+            this.txtLogFileLocation.Size = new System.Drawing.Size(367, 20);
+            this.txtLogFileLocation.TabIndex = 54;
+            this.txtLogFileLocation.Text = "Please Supply...";
+            // 
+            // lblLogFileLocation
+            // 
+            this.lblLogFileLocation.AutoSize = true;
+            this.lblLogFileLocation.Location = new System.Drawing.Point(57, 81);
+            this.lblLogFileLocation.Name = "lblLogFileLocation";
+            this.lblLogFileLocation.Size = new System.Drawing.Size(87, 13);
+            this.lblLogFileLocation.TabIndex = 53;
+            this.lblLogFileLocation.Text = "Log File location:";
+            // 
+            // btnLocateAuditFile
+            // 
+            this.btnLocateAuditFile.Location = new System.Drawing.Point(520, 52);
+            this.btnLocateAuditFile.Name = "btnLocateAuditFile";
+            this.btnLocateAuditFile.Size = new System.Drawing.Size(24, 20);
+            this.btnLocateAuditFile.TabIndex = 52;
+            this.btnLocateAuditFile.Text = "...";
+            this.btnLocateAuditFile.UseVisualStyleBackColor = true;
+            this.btnLocateAuditFile.Click += new System.EventHandler(this.btnLocateAuditFile_Click);
+            // 
+            // txtAuditFileLocation
+            // 
+            this.txtAuditFileLocation.Location = new System.Drawing.Point(147, 52);
+            this.txtAuditFileLocation.Name = "txtAuditFileLocation";
+            this.txtAuditFileLocation.Size = new System.Drawing.Size(367, 20);
+            this.txtAuditFileLocation.TabIndex = 48;
+            this.txtAuditFileLocation.Text = "Please Supply...";
+            // 
+            // lblAuditFIleLocation
+            // 
+            this.lblAuditFIleLocation.AutoSize = true;
+            this.lblAuditFIleLocation.Location = new System.Drawing.Point(54, 56);
+            this.lblAuditFIleLocation.Name = "lblAuditFIleLocation";
+            this.lblAuditFIleLocation.Size = new System.Drawing.Size(90, 13);
+            this.lblAuditFIleLocation.TabIndex = 45;
+            this.lblAuditFIleLocation.Text = "AuditFile location:";
             // 
             // groupBox2
             // 
@@ -262,68 +327,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Settings";
             // 
-            // lblAuditFIleLocation
+            // cmbAuditType
             // 
-            this.lblAuditFIleLocation.AutoSize = true;
-            this.lblAuditFIleLocation.Location = new System.Drawing.Point(51, 57);
-            this.lblAuditFIleLocation.Name = "lblAuditFIleLocation";
-            this.lblAuditFIleLocation.Size = new System.Drawing.Size(90, 13);
-            this.lblAuditFIleLocation.TabIndex = 45;
-            this.lblAuditFIleLocation.Text = "AuditFile location:";
-            // 
-            // txtAuditFileLocation
-            // 
-            this.txtAuditFileLocation.Location = new System.Drawing.Point(147, 52);
-            this.txtAuditFileLocation.Name = "txtAuditFileLocation";
-            this.txtAuditFileLocation.Size = new System.Drawing.Size(367, 20);
-            this.txtAuditFileLocation.TabIndex = 48;
-            this.txtAuditFileLocation.Text = "Please Supply...";
-            // 
-            // btnLocateAuditFile
-            // 
-            this.btnLocateAuditFile.Location = new System.Drawing.Point(520, 52);
-            this.btnLocateAuditFile.Name = "btnLocateAuditFile";
-            this.btnLocateAuditFile.Size = new System.Drawing.Size(24, 20);
-            this.btnLocateAuditFile.TabIndex = 52;
-            this.btnLocateAuditFile.Text = "...";
-            this.btnLocateAuditFile.UseVisualStyleBackColor = true;
-            this.btnLocateAuditFile.Click += new System.EventHandler(this.btnLocateAuditFile_Click);
-            // 
-            // lblLogFileLocation
-            // 
-            this.lblLogFileLocation.AutoSize = true;
-            this.lblLogFileLocation.Location = new System.Drawing.Point(54, 81);
-            this.lblLogFileLocation.Name = "lblLogFileLocation";
-            this.lblLogFileLocation.Size = new System.Drawing.Size(87, 13);
-            this.lblLogFileLocation.TabIndex = 53;
-            this.lblLogFileLocation.Text = "Log File location:";
-            // 
-            // txtLogFileLocation
-            // 
-            this.txtLogFileLocation.Location = new System.Drawing.Point(147, 78);
-            this.txtLogFileLocation.Name = "txtLogFileLocation";
-            this.txtLogFileLocation.Size = new System.Drawing.Size(367, 20);
-            this.txtLogFileLocation.TabIndex = 54;
-            this.txtLogFileLocation.Text = "Please Supply...";
-            // 
-            // btnLocateLogFileDir
-            // 
-            this.btnLocateLogFileDir.Location = new System.Drawing.Point(520, 81);
-            this.btnLocateLogFileDir.Name = "btnLocateLogFileDir";
-            this.btnLocateLogFileDir.Size = new System.Drawing.Size(24, 20);
-            this.btnLocateLogFileDir.TabIndex = 55;
-            this.btnLocateLogFileDir.Text = "...";
-            this.btnLocateLogFileDir.UseVisualStyleBackColor = true;
-            this.btnLocateLogFileDir.Click += new System.EventHandler(this.btnLocateLogFileDir_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(80, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 13);
-            this.label1.TabIndex = 56;
-            this.label1.Text = "Audit Type:";
+            this.cmbAuditType.FormattingEnabled = true;
+            this.cmbAuditType.Items.AddRange(new object[] {
+            "Full (Use Audit File, and Self Check)",
+            "Self Check Only"});
+            this.cmbAuditType.Location = new System.Drawing.Point(147, 25);
+            this.cmbAuditType.Name = "cmbAuditType";
+            this.cmbAuditType.Size = new System.Drawing.Size(121, 21);
+            this.cmbAuditType.TabIndex = 57;
             // 
             // Settings
             // 
@@ -374,5 +387,6 @@
         private System.Windows.Forms.Label lblAuditFIleLocation;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cmbAuditType;
     }
 }

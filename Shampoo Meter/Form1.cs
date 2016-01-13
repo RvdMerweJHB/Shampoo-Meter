@@ -52,15 +52,16 @@ namespace Shampoo_Meter
             }
             else
             {
-                //• CHECK FOR NEW .dat FILES
-                int newFiles = ClassGatherInfo.CheckForNewFiles();
-
-                //• RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
+                //• IF REQUIRED, RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
                 string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
                 ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
-
                 DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
                 entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
+
+                //• BEFORE CHECKING FOR NEW FILES, USE AUDIT ENTRIES TABLE TO SEE IF THERE ARE ANY ROWS IN THE DATABASE THAT NEEDS TO BE AUDITED.
+
+                //• CHECK FOR NEW .dat FILES
+                int newFiles = ClassGatherInfo.CheckForNewFiles();
 
                 if (entriesTable.entriesTable.Rows.Count != 0)
                 {
