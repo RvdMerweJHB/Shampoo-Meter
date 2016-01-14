@@ -40,36 +40,66 @@ namespace Shampoo_Meter
             return resultName + fileExtention;
         }
 
-        public static List<ClassDataFile> CompileBatchFileList(string pickUpLocation, ref DataTables.ClassImportInfoDataTable infoTable,ClassAuditEntriesDataTable auditEntries = null)
+        public static List<ClassDataFile> CompileFileList(string pickUpLocation, ref ClassImportInfoDataTable infoTable, bool useAuditFile)
         {
             List<ClassDataFile> fileList = new List<ClassDataFile>();
-
             String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
 
-            foreach (String fileLoc in filePaths)
+            if (useAuditFile)
             {
-                //ClassDataFile file = new ClassDataFile(fileLoc);
-                datFiles[count] = new ClassDataFile(filePaths[count]);
+                string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
+                ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
+                DataTables.ClassAuditEntriesDataTable auditEntriesTable = new DataTables.ClassAuditEntriesDataTable();
+                auditEntriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
 
-                string message = string.Empty;
+                if (auditEntriesTable.entriesTable.Rows.Count >= 1)
+                {
+                    foreach (String fileLoc in filePaths)
+                    {
+                        datFiles[count] = new ClassDataFile(filePaths[count]);
+                        infoTable.AddNewRow(datFiles[count], ref infoTable);
+                        string message = string.Empty;
 
-                if (auditEntries == null)
-                    message = VerifyFileIntact(datFiles[count]);
-                else
-                    message = VerifyFileIntact(datFiles[count], auditEntries);
+                        message = ClassAuditing.SelfCheck(datFiles[count]);
+                        infoTable.UpdateRow(datFiles[count], "Self_Check_Result", message, ref infoTable);
 
+                        message = ClassAuditing.AuditFileCheck(datFiles[count], auditEntriesTable);
+                        infoTable.UpdateRow(datFiles[count], "AuditFile_Check_Result", message, ref infoTable);
 
-                if (message == "AuditFile Check Successful" || message == "Self Check Successful")
-                    fileList.Add(datFiles[count]);
+                        //• ONLY ADD FILE TO LIST IF AUDIT PASSED
+                        if ((datFiles[count].PassedSelfCheck == true) && (datFiles[count].PassedAuditFileCheck == true))
+                            fileList.Add(datFiles[count]);
 
-                infoTable.AddNewRow(datFiles[count], message, ref infoTable);
-                count++;
+                        count++;
+                    }
+
+                    //• CHECK FOR FILES THAT WAS ONLY RAN ON SELF CHECK IN THE PAST, AND CAN NOW BE FULLY AUDITED USING THE NEW AUDIT FILE
+                    ClassAuditing.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, auditEntriesTable, ref infoTable);
+                }
             }
+            else
+            {
+                foreach (String fileLoc in filePaths)
+                {
+                    datFiles[count] = new ClassDataFile(filePaths[count]);
+                    infoTable.AddNewRow(datFiles[count], ref infoTable);
+                    string message = string.Empty;
 
+                    message = ClassAuditing.SelfCheck(datFiles[count]);
+                    infoTable.UpdateRow(datFiles[count], "Self_Check_Result", message, ref infoTable);
+
+                    //• ONLY ADD FILE TO LIST IF AUDIT PASSED
+                    if (datFiles[count].PassedSelfCheck == true)
+                        fileList.Add(datFiles[count]);
+
+                    count++;
+                }
+            }
             return fileList;
         }
+
         #endregion
 
         #region Private methods
@@ -88,7 +118,7 @@ namespace Shampoo_Meter
             //• Audit Type depends on if the auditEntries table has been supplied or not
             if (auditEntries == null)
             {
-                if(datFile.AmountOfLines == datFile.IntendedAmountOfLines)
+                if (datFile.AmountOfLines == datFile.IntendedAmountOfLines)
                     message = "Self Check Successful";
                 else
                     message = "Self Check Not Successful. File is not complete:CDR MISMATCH";

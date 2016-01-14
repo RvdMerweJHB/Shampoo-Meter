@@ -131,16 +131,14 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("USE [APN_DATA]");
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("INSERT INTO ");
-            sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded)");
+            sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded,Actual_CDR_Amount, Self_Check_CDR_Amount)");
             sqlQuery.AppendLine("   VALUES");
 
             foreach (ClassDataFile newDataFile in dataFiles)
             {
-                sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()),");
+                sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()," + newDataFile.AmountOfLines.ToString() + "," + newDataFile.IntendedAmountOfLines.ToString() + "),");
                 if (fileCount == (dataFiles.Count()))
-                {
                     sqlQuery = sqlQuery.Remove(sqlQuery.Length - 3, 1);
-                }
                 else
                     fileCount++;
             }
@@ -148,7 +146,9 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("SELECT TOP " + fileCount + "");
             sqlQuery.AppendLine("	[ID],");
-            sqlQuery.AppendLine("	[FILE_NAME]");
+            sqlQuery.AppendLine("	[FILE_NAME],");
+            sqlQuery.AppendLine("   [Actual_CDR_Amount],");
+            sqlQuery.AppendLine("   [Self_Check_CDR_Amount]");
             sqlQuery.AppendLine("FROM");
             sqlQuery.AppendLine("	MTN_APN_Data_File");
             sqlQuery.AppendLine("ORDER BY");
@@ -347,7 +347,7 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("USE [APN_DATA]");
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("UPDATE [MTN_APN_Data_File]");
-            sqlQuery.AppendLine("SET Audit_File_CDR_Amount = " + datFile.AmountOfLines.ToString());
+            sqlQuery.AppendLine("SET Audit_File_CDR_Amount = " + datFile.AuditFileEntryAmount.ToString());
             sqlQuery.AppendLine("WHERE");
             sqlQuery.AppendLine("   ID =" + datFile.MTN_APN_Data_File_ID.ToString());
 

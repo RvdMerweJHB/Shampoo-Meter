@@ -44,6 +44,8 @@ namespace Shampoo_Meter
 
         private void btnFindFiles_Click(object sender, EventArgs e)
         {
+            prgStatus.Maximum = this.FileList.Count();
+            prgStatus.Step = 1;
             string pickUpPath = Properties.Settings.Default.FileLocation;
             DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
 
@@ -53,65 +55,35 @@ namespace Shampoo_Meter
             }
             else
             {
-                string logFileLoc = Properties.Settings.Default.LogFileDir;
-                string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
-                string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
-
-                string auditType = Properties.Settings.Default.AuditType;
-
-                switch (auditType)
+                try
                 {
-                    case "Full (Use Audit File, and Self Check)":
-                        //• RETRIEVE AUDIT FILE AND USE IT TO POPULATE TABLE
-                        string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
-                        ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
-                        DataTables.ClassAuditEntriesDataTable entriesTable = new DataTables.ClassAuditEntriesDataTable();
-                        entriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
+                    string logFileLocation = Properties.Settings.Default.LogFileDir;
+                    string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
+                    string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
+                    string auditType = Properties.Settings.Default.AuditType;
 
-                        //• BEFORE CHECKING FOR NEW FILES, USE AUDIT ENTRIES TABLE TO SEE IF THERE ARE ANY ROWS IN THE DATABASE THAT NEEDS TO BE AUDITED.
-                        ClassAuditFile.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, entriesTable, ref infoTable);
+                    switch (auditType)
+                    {
+                        case "Self Check Only":
+                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, false);
+                            break;
+                        case "Full (Use Audit File, and Self Check)":
+                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, true);
+                            break;
+                    }
 
-                        if (entriesTable.entriesTable.Rows.Count != 0)
-                        {
-                            //• CHECK FOR NEW .dat FILES
-                            int newFiles = ClassGatherInfo.CheckForNewFiles();
+                    //• WRITE ALL RESULTS TO LOG FILE
+                    ClassCSVTools.SaveTableToCSV(infoTable, logFileLocation, logFileName);
 
-                            try
-                            {
-                                this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, ref infoTable, entriesTable);
-                                lbl2.Enabled = true;
-                                btnMoveFiles.Enabled = true;
-                                MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("No audit entries has been found, are you using the Audit right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        break;
-
-                    case "Self Check Only":
-                        try
-                        {
-                            this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, ref infoTable);
-                            lbl2.Enabled = true;
-                            btnMoveFiles.Enabled = true;
-                            MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        break;
-
+                    //• ACTIVATE NEXT CONTROL
+                    MessageBox.Show("Theres been " + this.FileList.Count.ToString() + " files found that's passed Audit." + Environment.NewLine + "See LogFile:" + logFileName + " for more information.", "Find Files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    lbl2.Enabled = true;
+                    btnMoveFiles.Enabled = true;
                 }
-
-                //• WRITE ALL RESULTS TO LOG FILE
-                ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There has been an Error:" + ex.Message, "Find Files", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -134,7 +106,7 @@ namespace Shampoo_Meter
                     ClassTools.MoveFiles(datFiles, outputPath);
                     btnImportFiles.Enabled = true;
                     lbl3.Enabled = true;
-                    MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " Files Moved.", "Files Move", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -145,6 +117,8 @@ namespace Shampoo_Meter
 
         private void btnImportFiles_Click(object sender, EventArgs e)
         {
+            prgStatus.Maximum = this.FileList.Count();
+            prgStatus.Step = 1;
             string SSISTemplateLocation = Properties.Settings.Default.SSISTemplateLocation;
             string SSISConnectionString = Properties.Settings.Default.SSISConnectionString;
 
@@ -158,6 +132,7 @@ namespace Shampoo_Meter
                     {
                         Classes.ClassSSISPackage ssisPackage = new Classes.ClassSSISPackage(SSISTemplateLocation, SSISConnectionString);
                         ssisPackage.ImportDataFile(file);
+                        prgStatus.PerformStep();
                     }
                     lbl4.Enabled = true;
                     btnCreateFileId.Enabled = true;
@@ -179,6 +154,8 @@ namespace Shampoo_Meter
 
         private void btnCreateFileId_Click(object sender, EventArgs e)
         {
+            prgStatus.Maximum = this.FileList.Count();
+            prgStatus.Step = 1;
             string connectionString = Properties.Settings.Default.ConnectionString;
 
             if (connectionString == string.Empty || connectionString == "")
@@ -198,10 +175,17 @@ namespace Shampoo_Meter
                     {
                         try
                         {
-                            int count = DAL.ClassSQLAccess.ImportRawData(dr[0].ToString(), dr[1].ToString(), connectionString);
+                            ClassDataFile datFile = new ClassDataFile();
+                            datFile = ClassDataFile.ReturnDataFileByNameAndActualAmount(dr["FILE_NAME"].ToString(), Convert.ToInt16(dr["Actual_CDR_Amount"]), this.FileList);
+                            datFile.MTN_APN_Data_File_ID = Convert.ToInt16(dr["ID"]);
+
+                            if (datFile.PassedAuditFileCheck)
+                                DAL.ClassSQLAccess.UpdateIncompleteAudit(datFile, connectionString);
+
+                            int count = DAL.ClassSQLAccess.ImportRawData(datFile.MTN_APN_Data_File_ID.ToString(), dr[1].ToString(), connectionString);
                             bool updated = DAL.ClassSQLAccess.UpdateDataFile(dr[0].ToString(), connectionString);
                             successfullImports++;
-                            //TODO: Check the amount returned with the line amounts to make sure import was successfull.
+                            prgStatus.PerformStep();
                         }
                         catch
                         {
@@ -214,8 +198,6 @@ namespace Shampoo_Meter
                 {
                     MessageBox.Show("No DAT Files loaded yet. Make sure steps 1 to 3 ran successfully");
                 }
-                //TODO: Update excel file with status s 
-
                 MessageBox.Show("There has been " + successfullImports + " tables imported into MTN_APN_DATA table");
             }
         }

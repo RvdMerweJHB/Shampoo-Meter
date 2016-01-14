@@ -52,32 +52,7 @@ namespace Shampoo_Meter.Classes
         #endregion
 
         #region Public Methods
-        public static bool CheckForInCompleteAudits(string connectionString, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
-        {
-            DataTable _resultTable = new DataTable();
-            _resultTable = ClassSQLAccess.SelectInCompletesAudits(connectionString, entriesTable);
-
-            if (_resultTable.Rows.Count >= 1)
-                UpdateInCompleteAudits(_resultTable, entriesTable, ref infoTable, connectionString);
-
-            return true;
-        }
-
-        public static void UpdateInCompleteAudits(DataTable table, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable, string connectionString)
-        {
-            string message;
-            foreach (DataRow dataRow in table.Rows)
-            {
-                ClassDataFile datFile = new ClassDataFile(dataRow);
-                message = ClassGatherInfo.VerifyFileIntact(datFile, entriesTable);
-
-                if (message == "Successful")
-                {
-                    ClassSQLAccess.UpdateIncompleteAudit(datFile, connectionString);
-                }
-                infoTable.AddNewRow(datFile, "Incomplete Audit Entry Found:Result" + message, ref infoTable);
-            }           
-        }
+        
         #endregion
 
         #region Private Methods

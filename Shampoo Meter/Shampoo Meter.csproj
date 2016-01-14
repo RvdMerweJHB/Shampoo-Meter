@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ClassAuditFile.cs" />
+    <Compile Include="Classes\ClassAuditing.cs" />
     <Compile Include="Classes\ClassCSVTools.cs" />
     <Compile Include="Classes\ClassDataFile.cs" />
     <Compile Include="Classes\ClassExcelTools.cs" />

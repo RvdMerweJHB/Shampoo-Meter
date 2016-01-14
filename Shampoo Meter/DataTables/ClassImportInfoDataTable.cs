@@ -26,24 +26,35 @@ namespace Shampoo_Meter.DataTables
             DataTable infoTable = new DataTable();
 
             DataColumn nameCol = new DataColumn();
-            DataColumn resultCol = new DataColumn();
+            DataColumn selfCheckResultCol = new DataColumn();
+            DataColumn auditFileCheckResultCol = new DataColumn();
 
             nameCol.ColumnName = "File_Name";
-            resultCol.ColumnName = "Result";
+            selfCheckResultCol.ColumnName = "Self_Check_Result";
+            auditFileCheckResultCol.ColumnName = "AuditFile_Check_Result";
 
             infoTable.Columns.Add(nameCol);
-            infoTable.Columns.Add(resultCol);
+            infoTable.Columns.Add(selfCheckResultCol);
+            infoTable.Columns.Add(auditFileCheckResultCol);
 
             this._InfoTable = infoTable;
         }
         
         //Methods
-        public void AddNewRow(ClassDataFile dataFile, string result, ref ClassImportInfoDataTable infoTable)
+        public void AddNewRow(ClassDataFile dataFile, ref ClassImportInfoDataTable infoTable)
         {
             DataRow newRow = infoTable.infoTable.NewRow();
             newRow["File_Name"] = dataFile.FileName;
-            newRow["Result"] = result;
+            newRow["Self_Check_Result"] = "Not Checked Yet";
+            newRow["AuditFile_Check_Result"] = "Not Checked Yet";
             infoTable.infoTable.Rows.Add(newRow);
+            infoTable.infoTable.AcceptChanges();
+        }
+
+        public void UpdateRow(ClassDataFile dataFile, string resultType, string resultMessage, ref ClassImportInfoDataTable infoTable)
+        {
+            DataRow row = infoTable.infoTable.Select("File_Name = '" + dataFile.FileName + "'").FirstOrDefault();
+            row[resultType] = resultMessage.ToString();
             infoTable.infoTable.AcceptChanges();
         }
     }

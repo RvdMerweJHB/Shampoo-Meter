@@ -48,6 +48,7 @@
             this.dlgFolderLocationBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.dlgFileLocationBrowser = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmbAuditType = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnLocateLogFileDir = new System.Windows.Forms.Button();
             this.txtLogFileLocation = new System.Windows.Forms.TextBox();
@@ -56,7 +57,6 @@
             this.txtAuditFileLocation = new System.Windows.Forms.TextBox();
             this.lblAuditFIleLocation = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cmbAuditType = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -242,6 +242,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Audit Settings";
             // 
+            // cmbAuditType
+            // 
+            this.cmbAuditType.FormattingEnabled = true;
+            this.cmbAuditType.Items.AddRange(new object[] {
+            "Full (Use Audit File, and Self Check)",
+            "Self Check Only"});
+            this.cmbAuditType.Location = new System.Drawing.Point(147, 25);
+            this.cmbAuditType.Name = "cmbAuditType";
+            this.cmbAuditType.Size = new System.Drawing.Size(397, 21);
+            this.cmbAuditType.TabIndex = 57;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -326,17 +337,6 @@
             this.groupBox2.TabIndex = 54;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General Settings";
-            // 
-            // cmbAuditType
-            // 
-            this.cmbAuditType.FormattingEnabled = true;
-            this.cmbAuditType.Items.AddRange(new object[] {
-            "Full (Use Audit File, and Self Check)",
-            "Self Check Only"});
-            this.cmbAuditType.Location = new System.Drawing.Point(147, 25);
-            this.cmbAuditType.Name = "cmbAuditType";
-            this.cmbAuditType.Size = new System.Drawing.Size(121, 21);
-            this.cmbAuditType.TabIndex = 57;
             // 
             // Settings
             // 

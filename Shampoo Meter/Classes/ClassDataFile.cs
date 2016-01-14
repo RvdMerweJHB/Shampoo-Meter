@@ -23,6 +23,9 @@ namespace Shampoo_Meter.Classes
         private string _MonthName;
         private string _FileNumber;
         private int _MTN_APN_Data_File_ID;
+        private bool _passedSelfCheck;
+        private bool _passedAuditFileCheck;
+        private int _AuditFileEntryAmount;
         #endregion
 
         #region Properties
@@ -92,7 +95,20 @@ namespace Shampoo_Meter.Classes
             get { return _MTN_APN_Data_File_ID; }
             set { _MTN_APN_Data_File_ID = value; } 
         }
-
+        public bool PassedSelfCheck {
+            get { return _passedSelfCheck;}
+            set { _passedSelfCheck = value;} 
+        }
+        public bool PassedAuditFileCheck 
+        {
+            get { return _passedAuditFileCheck;}
+            set { _passedAuditFileCheck = value;} 
+        }
+        public int AuditFileEntryAmount 
+            {
+                get { return _AuditFileEntryAmount;}
+                set { _AuditFileEntryAmount = value;}
+            }
         #endregion
 
         #region Constructors
@@ -129,8 +145,36 @@ namespace Shampoo_Meter.Classes
         }
         #endregion
 
+        #region Public Methods
+        public static ClassDataFile ReturnDataFileByID(int ID, List<ClassDataFile> dataFileList)
+        {
+            ClassDataFile selectedDataFile = new ClassDataFile();
+
+            foreach(ClassDataFile currentFile in dataFileList)
+            {
+                if (currentFile.MTN_APN_Data_File_ID == ID)
+                    selectedDataFile = currentFile;
+            }
+
+            return selectedDataFile;
+        }
+
+        public static ClassDataFile ReturnDataFileByNameAndActualAmount(string fileName, int actualAmount, List<ClassDataFile> dataFileList)
+        {
+            ClassDataFile selectedDataFile = new ClassDataFile();
+
+            foreach(ClassDataFile currentFile in dataFileList)
+            {
+                if ((currentFile.FileName == fileName) && (currentFile.AmountOfLines == actualAmount))
+                    selectedDataFile = currentFile;
+            }
+
+            return selectedDataFile;
+        }
+        #endregion
+
         #region Private Methods
-       
+
         private string GetMonthName(int monthNumber)
         {
             string name = string.Empty;
