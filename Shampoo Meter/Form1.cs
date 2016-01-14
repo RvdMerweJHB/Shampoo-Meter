@@ -53,6 +53,10 @@ namespace Shampoo_Meter
             }
             else
             {
+                string logFileLoc = Properties.Settings.Default.LogFileDir;
+                string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
+                string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
+
                 string auditType = Properties.Settings.Default.AuditType;
 
                 switch (auditType)
@@ -68,12 +72,9 @@ namespace Shampoo_Meter
                         ClassAuditFile.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, entriesTable, ref infoTable);
 
                         if (entriesTable.entriesTable.Rows.Count != 0)
-                        { 
+                        {
                             //• CHECK FOR NEW .dat FILES
                             int newFiles = ClassGatherInfo.CheckForNewFiles();
-                            string logFileLoc = Properties.Settings.Default.LogFileDir;
-                            string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
-                            string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
 
                             try
                             {
@@ -86,19 +87,31 @@ namespace Shampoo_Meter
                             {
                                 MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
-
-                            ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
                         }
                         else
                         {
-                            MessageBox.Show("No audit entries has been found, are you using the right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("No audit entries has been found, are you using the Audit right file?", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                        break;
 
-                        break;
                     case "Self Check Only":
+                        try
+                        {
+                            this.FileList = ClassGatherInfo.CompileBatchFileList(pickUpPath, ref infoTable);
+                            lbl2.Enabled = true;
+                            btnMoveFiles.Enabled = true;
+                            MessageBox.Show("There was a total of " + this.FileList.Count.ToString() + " found.", "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("There has been an Error:" + ex.Message, "Files Lookup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                         break;
+
                 }
 
+                //• WRITE ALL RESULTS TO LOG FILE
+                ClassCSVTools.SaveTableToCSV(infoTable, logFileLoc, logFileName);
             }
         }
 

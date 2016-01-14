@@ -10,7 +10,6 @@ namespace Shampoo_Meter.Classes
     public class ClassDataFile
     {
         #region Private variables
-        private int intendedNumberOfLines;
         private string _Filetype;
         private string _Filename;
         private string _FileExtension;
@@ -103,23 +102,14 @@ namespace Shampoo_Meter.Classes
         //Constuctor using file location string
         public ClassDataFile(string location)
         {
-            int count = 0;
-            string line;
-            using (StreamReader sr = new StreamReader(location))
-            {
-                line = sr.ReadToEnd();
-                sr.Close();
-                for (int n = 0; n < line.Length; n++) if (line[n] == '*') count++;
-            }
-            this.AmountOfLines = count -1 ;
-            this.IntendedAmountOfLines = 2;
+            this.AmountOfLines = this.CountAmountOfLinesAndSetIntend(location);
             this.FileName = location.Substring(location.Length - 12, 12);
             this.FileExtension = "dat";
             this.Location = location;
             this.Day = FileName.Substring(2, 2);
             this.Month = FileName.Substring(4, 2);
             this.MonthName = this.GetMonthName(Convert.ToInt16(this.Month));
-            this.Year = "20" + line.Substring(2, 2);
+            this.Year = this.GetYear(location);       
             this.FileNumber = FileName.Substring(6, 2);
             this.FileType = FileName.Substring(0, 2);
         }
@@ -140,6 +130,7 @@ namespace Shampoo_Meter.Classes
         #endregion
 
         #region Private Methods
+       
         private string GetMonthName(int monthNumber)
         {
             string name = string.Empty;
@@ -187,6 +178,34 @@ namespace Shampoo_Meter.Classes
             }
 
             return name;
+        }
+
+        private string GetYear(string location)
+        {
+            string _result;
+
+            _result = System.IO.File.ReadLines(location).First();
+
+            return "20" + _result.Substring(2, 2);
+        }
+
+        private int CountAmountOfLinesAndSetIntend(string location)
+        {
+            int count = 0;
+            using (StreamReader sr = new StreamReader(location))
+            {
+                String line;
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (line.Substring(0, 2).ToString() == "TR")
+                        this.IntendedAmountOfLines = Convert.ToInt32(line.Substring(2, 8));
+
+                    count++;
+                }
+                sr.Close();
+            }
+            return count - 1;
         }
         #endregion
     }

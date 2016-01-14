@@ -50,7 +50,7 @@ namespace Shampoo_Meter
 
             foreach (String fileLoc in filePaths)
             {
-                ClassDataFile file = new ClassDataFile(fileLoc);
+                //ClassDataFile file = new ClassDataFile(fileLoc);
                 datFiles[count] = new ClassDataFile(filePaths[count]);
 
                 string message = string.Empty;
