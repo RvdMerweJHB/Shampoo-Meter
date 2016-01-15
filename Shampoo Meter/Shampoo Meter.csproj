@@ -81,6 +81,7 @@
     <Compile Include="Classes\ClassCSVTools.cs" />
     <Compile Include="Classes\ClassDataFile.cs" />
     <Compile Include="Classes\ClassExcelTools.cs" />
+    <Compile Include="Classes\ClassLogFile.cs" />
     <Compile Include="Classes\ClassSSISPackage.cs" />
     <Compile Include="ClassGatherInfo.cs" />
     <Compile Include="ClassTools.cs" />

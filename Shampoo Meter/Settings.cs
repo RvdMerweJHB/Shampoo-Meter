@@ -26,6 +26,7 @@ namespace Shampoo_Meter
             txtConnectionString.Text = Properties.Settings.Default.ConnectionString;
 
             cmbAuditType.SelectedIndex = cmbAuditType.Items.IndexOf(Properties.Settings.Default.AuditType);
+            
             txtAuditFileLocation.Text = Properties.Settings.Default.AuditFileLocation;
             txtLogFileLocation.Text = Properties.Settings.Default.LogFileDir;
 
@@ -89,6 +90,12 @@ namespace Shampoo_Meter
             Properties.Settings.Default.LogFileExt = (radCsv.Checked == true) ? ".csv" : ".xlsx";
             Properties.Settings.Default.Save();
             Close();
+        }
+
+        private void cmbAuditType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtAuditFileLocation.Enabled = (cmbAuditType.SelectedIndex != cmbAuditType.Items.IndexOf("Self Check Only")) ? true : false;
+            lblAuditFIleLocation.Enabled = (cmbAuditType.SelectedIndex != cmbAuditType.Items.IndexOf("Self Check Only")) ? true : false;
         }
     }
 }
