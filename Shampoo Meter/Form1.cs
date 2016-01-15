@@ -110,9 +110,9 @@ namespace Shampoo_Meter
 
                     //• COMPOSE MESSAGEBOX TEXT
                     if (this.FileList.Count >= 1)
-                        messageBoxText = "Theres been " + this.FileList.Count.ToString() + " files found that's passed Audit." + Environment.NewLine;
+                        messageBoxText = "There's been " + this.FileList.Count.ToString() + " files found that's passed Audit." + Environment.NewLine;
                     else
-                        messageBoxText = "There has been no files that passed Audit, are you using the correct PickUp Location?" + Environment.NewLine;
+                        messageBoxText = "There's been no files that passed Audit, are you using the correct PickUp Location?" + Environment.NewLine;
 
                     //• WRITE ALL RESULTS TO LOG FILE
                     if (infoTable.infoTable.Rows.Count >= 1)
@@ -207,7 +207,7 @@ namespace Shampoo_Meter
 
         private void btnCreateFileId_Click(object sender, EventArgs e)
         {
-            prgStatus.Refresh();
+            prgStatus.Value = 0;
             prgStatus.Maximum = this.FileList.Count();
             prgStatus.Step = 1;
             string connectionString = Properties.Settings.Default.ConnectionString;
