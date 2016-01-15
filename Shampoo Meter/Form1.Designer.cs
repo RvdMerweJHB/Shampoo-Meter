@@ -52,6 +52,7 @@
             this.tabCMFilesCreate = new System.Windows.Forms.TabPage();
             this.prgStatus = new System.Windows.Forms.ProgressBar();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.btnReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgSuccsessFiles)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabProcessDatFiles.SuspendLayout();
@@ -121,7 +122,7 @@
             this.dgSuccsessFiles.Name = "dgSuccsessFiles";
             this.dgSuccsessFiles.ReadOnly = true;
             this.dgSuccsessFiles.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgSuccsessFiles.Size = new System.Drawing.Size(588, 266);
+            this.dgSuccsessFiles.Size = new System.Drawing.Size(588, 240);
             this.dgSuccsessFiles.TabIndex = 7;
             // 
             // txtBeginID
@@ -252,6 +253,7 @@
             // 
             // tabProcessDatFiles
             // 
+            this.tabProcessDatFiles.Controls.Add(this.btnReset);
             this.tabProcessDatFiles.Controls.Add(this.btnFindFiles);
             this.tabProcessDatFiles.Controls.Add(this.label4);
             this.tabProcessDatFiles.Controls.Add(this.btnMoveFiles);
@@ -304,6 +306,16 @@
             this.lblStatus.TabIndex = 19;
             this.lblStatus.Text = "Status:";
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(8, 390);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(589, 23);
+            this.btnReset.TabIndex = 19;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,6 +366,7 @@
         private System.Windows.Forms.TabPage tabCMFilesCreate;
         private System.Windows.Forms.ProgressBar prgStatus;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 

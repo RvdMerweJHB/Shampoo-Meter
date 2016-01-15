@@ -44,8 +44,6 @@ namespace Shampoo_Meter
 
         private void btnFindFiles_Click(object sender, EventArgs e)
         {
-            prgStatus.Maximum = this.FileList.Count();
-            prgStatus.Step = 1;
             string pickUpPath = Properties.Settings.Default.FileLocation;
             DataTables.ClassImportInfoDataTable infoTable = new DataTables.ClassImportInfoDataTable();
 
@@ -57,28 +55,45 @@ namespace Shampoo_Meter
             {
                 try
                 {
+                    string messageBoxText;
                     string logFileLocation = Properties.Settings.Default.LogFileDir;
                     string logFileExtention = Shampoo_Meter.Properties.Settings.Default.LogFileExt;
                     string logFileName = ClassGatherInfo.DetermineFileName(logFileExtention);
                     string auditType = Properties.Settings.Default.AuditType;
 
+                    DataTable updatedAuditEntries = new DataTable();//This table is only for displaying updated Audit Entries info, back to the user.
+
                     switch (auditType)
                     {
                         case "Self Check Only":
-                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, false);
+                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, false, ref updatedAuditEntries);
                             break;
                         case "Full (Use Audit File, and Self Check)":
-                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, true);
+                            this.FileList = ClassGatherInfo.CompileFileList(pickUpPath, ref infoTable, true, ref updatedAuditEntries);
                             break;
                     }
 
                     //• WRITE ALL RESULTS TO LOG FILE
                     ClassCSVTools.SaveTableToCSV(infoTable, logFileLocation, logFileName);
 
+                    //• COMPOSE MESSAGEBOX TEXT
+                    if (this.FileList.Count >= 1)
+                        messageBoxText = "Theres been " + this.FileList.Count.ToString() + " files found that's passed Audit." + Environment.NewLine;
+                    else
+                        messageBoxText = "There has been no files that passed Audit, are you using the correct PickUp Location?" + Environment.NewLine;
+
+                    if (updatedAuditEntries.Rows.Count >= 1)
+                        messageBoxText += "Also, Theres been " + updatedAuditEntries.Rows.Count + " Audit Entries updated." + Environment.NewLine;
+
+                    messageBoxText  += "For more information see LogFile: " + logFileName + "";
+
+                    MessageBox.Show(messageBoxText, "Find Files", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     //• ACTIVATE NEXT CONTROL
-                    MessageBox.Show("Theres been " + this.FileList.Count.ToString() + " files found that's passed Audit." + Environment.NewLine + "See LogFile:" + logFileName + " for more information.", "Find Files", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    lbl2.Enabled = true;
-                    btnMoveFiles.Enabled = true;
+                    if (this.FileList.Count >= 1)
+                    {
+                        lbl2.Enabled = true;
+                        btnMoveFiles.Enabled = true;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -97,7 +112,7 @@ namespace Shampoo_Meter
             }
             else
             {
-                //• MOVE THE NEW FILE TO THE NEW LOCATION 
+                //• MOVE THE FILE TO THE NEW LOCATION 
                 Classes.ClassDataFile[] datFiles;
                 datFiles = this.FileList.ToArray<Classes.ClassDataFile>();
 
@@ -228,6 +243,20 @@ namespace Shampoo_Meter
         {
             Settings settingsForm = new Settings();
             settingsForm.ShowDialog();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            this.FileList.Clear();
+            dgSuccsessFiles.DataSource = new DataTable();
+            prgStatus.Refresh();
+
+            btnMoveFiles.Enabled = false;
+            lbl2.Enabled = false;
+            btnImportFiles.Enabled = false;
+            lbl3.Enabled = false;
+            btnCreateFileId.Enabled = false;
+            lbl4.Enabled = false;
         }
     }
 }

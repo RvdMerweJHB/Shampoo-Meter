@@ -13,7 +13,7 @@ namespace Shampoo_Meter.Classes
     class ClassAuditing
     {
         //This class sould contain the static methods for the two types of Auditing, als use static properties for the messages.
-        public static bool CheckForInCompleteAudits(string connectionString, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
+        public static DataTable CheckForInCompleteAudits(string connectionString, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable)
         {
             DataTable _resultTable = new DataTable();
             _resultTable = ClassSQLAccess.SelectInCompletesAudits(connectionString, entriesTable);
@@ -21,7 +21,7 @@ namespace Shampoo_Meter.Classes
             if (_resultTable.Rows.Count >= 1)
                 UpdateInCompleteAudits(_resultTable, entriesTable, ref infoTable, connectionString);
 
-            return true;
+            return _resultTable;
         }
 
         public static void UpdateInCompleteAudits(DataTable table, ClassAuditEntriesDataTable entriesTable, ref ClassImportInfoDataTable infoTable, string connectionString)

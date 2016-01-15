@@ -36,11 +36,11 @@ namespace Shampoo_Meter
             DateTime date = new DateTime();
             date = DateTime.Now;
 
-            resultName = date.ToString("dd") + "_" + date.ToString("MMMMMM") + "_" + date.ToString("yyyy");
+            resultName = date.ToString("HHmm") + "_" + date.ToString("dd") + "_" + date.ToString("MMMMMM") + "_" + date.ToString("yyyy");
             return resultName + fileExtention;
         }
 
-        public static List<ClassDataFile> CompileFileList(string pickUpLocation, ref ClassImportInfoDataTable infoTable, bool useAuditFile)
+        public static List<ClassDataFile> CompileFileList(string pickUpLocation, ref ClassImportInfoDataTable infoTable, bool useAuditFile, ref DataTable updatedAuditEntries)
         {
             List<ClassDataFile> fileList = new List<ClassDataFile>();
             String[] filePaths = Directory.GetFiles(pickUpLocation);
@@ -76,7 +76,7 @@ namespace Shampoo_Meter
                     }
 
                     //• CHECK FOR FILES THAT WAS ONLY RAN ON SELF CHECK IN THE PAST, AND CAN NOW BE FULLY AUDITED USING THE NEW AUDIT FILE
-                    ClassAuditing.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, auditEntriesTable, ref infoTable);
+                    updatedAuditEntries = ClassAuditing.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, auditEntriesTable, ref infoTable);
                 }
             }
             else

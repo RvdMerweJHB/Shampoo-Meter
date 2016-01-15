@@ -45,7 +45,7 @@ namespace Shampoo_Meter.DataTables
         {
             DataRow newRow = infoTable.infoTable.NewRow();
             newRow["File_Name"] = dataFile.FileName;
-            newRow["Self_Check_Result"] = "Not Checked Yet";
+            newRow["Self_Check_Result"] = "";
             newRow["AuditFile_Check_Result"] = "Not Checked Yet";
             infoTable.infoTable.Rows.Add(newRow);
             infoTable.infoTable.AcceptChanges();
