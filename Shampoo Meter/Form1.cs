@@ -46,6 +46,8 @@ namespace Shampoo_Meter
         private void btnAuditExisting_Click(object sender, EventArgs e)
         {
             string logFileDir = Properties.Settings.Default.LogFileDir;
+            string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
+            string messageBoxText = string.Empty;
 
             if (logFileDir == string.Empty || logFileDir == "")
             {
@@ -55,25 +57,37 @@ namespace Shampoo_Meter
             {
                 ClassLogFile logFile = new ClassLogFile(logFileDir);
 
-                string messageBoxText = string.Empty;
-
-                ClassAuditFile auditFile = new ClassAuditFile(Properties.Settings.Default.AuditFileLocation);
-                DataTables.ClassAuditEntriesDataTable auditEntriesTable = new DataTables.ClassAuditEntriesDataTable();
-                auditEntriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
-
-                ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
-                DataTable updatedAuditEntries = new DataTable();
-
-                //• CHECK FOR FILES THAT WAS ONLY RAN ON SELF CHECK IN THE PAST, AND CAN NOW BE FULLY AUDITED USING THE NEW AUDIT FILE
-                updatedAuditEntries = ClassAuditing.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, auditEntriesTable, ref infoTable);
-
-                if (updatedAuditEntries.Rows.Count >= 1)
-                    messageBoxText += "There's been " + updatedAuditEntries.Rows.Count + " Audit Entries updated." + Environment.NewLine;
+                if (auditFileLocation == string.Empty || auditFileLocation == "")
+                {
+                    MessageBox.Show("No Audit File Location supplied!");
+                }
                 else
-                    messageBoxText += "No Entries could be Updated using audit File: " + auditFile.location + "";
+                { 
+                    ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
+                    DataTables.ClassAuditEntriesDataTable auditEntriesTable = new DataTables.ClassAuditEntriesDataTable();
+                    auditEntriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
 
-                if (infoTable.infoTable.Rows.Count >= 1)
-                    ClassCSVTools.SaveTableToCSV(infoTable, logFile.Location, logFile.Name);
+                    ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
+                    DataTable updatedAuditEntries = new DataTable();
+
+                    try
+                    {
+                        //• CHECK FOR FILES THAT WAS ONLY RAN ON SELF CHECK IN THE PAST, AND CAN NOW BE FULLY AUDITED USING A NEW AUDIT FILE
+                        updatedAuditEntries = ClassAuditing.CheckForInCompleteAudits(Shampoo_Meter.Properties.Settings.Default.ConnectionString, auditEntriesTable, ref infoTable);
+
+                        if (updatedAuditEntries.Rows.Count >= 1)
+                            messageBoxText += "There's been " + updatedAuditEntries.Rows.Count + " Audit Entries updated." + Environment.NewLine;
+                        else
+                            messageBoxText += "No Entries could be Updated using audit File: " + auditFile.location + "";
+
+                        if (infoTable.infoTable.Rows.Count >= 1)
+                            ClassCSVTools.SaveTableToCSV(infoTable, logFile.Location, logFile.Name);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                }
 
                 CheckFileStatus();
                 MessageBox.Show(messageBoxText, "Find Files", MessageBoxButtons.OK, MessageBoxIcon.Information);           

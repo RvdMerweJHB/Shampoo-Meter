@@ -107,7 +107,7 @@
             // 
             // btnCreateCMFile
             // 
-            this.btnCreateCMFile.Location = new System.Drawing.Point(7, 56);
+            this.btnCreateCMFile.Location = new System.Drawing.Point(480, 390);
             this.btnCreateCMFile.Name = "btnCreateCMFile";
             this.btnCreateCMFile.Size = new System.Drawing.Size(121, 23);
             this.btnCreateCMFile.TabIndex = 6;
@@ -130,14 +130,14 @@
             // 
             // txtBeginID
             // 
-            this.txtBeginID.Location = new System.Drawing.Point(131, 29);
+            this.txtBeginID.Location = new System.Drawing.Point(6, 98);
             this.txtBeginID.Name = "txtBeginID";
             this.txtBeginID.Size = new System.Drawing.Size(100, 20);
             this.txtBeginID.TabIndex = 8;
             // 
             // txtEndID
             // 
-            this.txtEndID.Location = new System.Drawing.Point(237, 29);
+            this.txtEndID.Location = new System.Drawing.Point(6, 137);
             this.txtEndID.Name = "txtEndID";
             this.txtEndID.Size = new System.Drawing.Size(100, 20);
             this.txtEndID.TabIndex = 9;
@@ -145,7 +145,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(128, 14);
+            this.label1.Location = new System.Drawing.Point(7, 82);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 10;
@@ -154,7 +154,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(234, 14);
+            this.label2.Location = new System.Drawing.Point(7, 121);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 11;
@@ -163,7 +163,7 @@
             // cmbApnClients
             // 
             this.cmbApnClients.FormattingEnabled = true;
-            this.cmbApnClients.Location = new System.Drawing.Point(6, 29);
+            this.cmbApnClients.Location = new System.Drawing.Point(6, 42);
             this.cmbApnClients.Name = "cmbApnClients";
             this.cmbApnClients.Size = new System.Drawing.Size(121, 21);
             this.cmbApnClients.TabIndex = 12;
@@ -171,7 +171,7 @@
             // lblApnClientName
             // 
             this.lblApnClientName.AutoSize = true;
-            this.lblApnClientName.Location = new System.Drawing.Point(7, 14);
+            this.lblApnClientName.Location = new System.Drawing.Point(7, 26);
             this.lblApnClientName.Name = "lblApnClientName";
             this.lblApnClientName.Size = new System.Drawing.Size(92, 13);
             this.lblApnClientName.TabIndex = 13;
@@ -231,7 +231,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(128, 61);
+            this.label5.Location = new System.Drawing.Point(226, 395);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(248, 13);
             this.label5.TabIndex = 19;
