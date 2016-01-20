@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,26 +19,10 @@ namespace Shampoo_Meter
         //4.Verify that the amount of lines correspond with the amount indicated in last line.
         //5.Write this number to the ImportInfo file.
 
-        //Private variables
-
-        //Porperties
-
-        //Constructors
-
         //Methods
-        #region Private Methods
-        private string LatestExistingFile()
-        {
-            
-            string previousFileName = string.Empty;
-            //TODO: Locate the latest file name from Database
-            return previousFileName;
-        }
-        #endregion
-
         #region Public Methods
         public static int CheckForNewFiles()
-        { 
+        {
             //TODO: Current code returns number larger than zero, so that application can continue
             //Still need to add the code that actually checks for new files.
             int count = 0;
@@ -45,68 +30,109 @@ namespace Shampoo_Meter
             return count;
         }
 
-        public static string DetermineFileName(string fileExtention)
-        {
-            string resultName = string.Empty;
-            DateTime date = new DateTime();
-            date = DateTime.Now;
 
-            resultName = date.ToString("MMMMMM");
-            return resultName + fileExtention;
-        }
 
-        public static List<ClassDataFile> WriteNewFilesToExcel(string fileName, string pickUpLocation)
+        public static List<ClassDataFile> CompileFileList(string pickUpLocation, ref ClassImportInfoDataTable infoTable, bool useAuditFile)
         {
-            var myList = new List<ClassDataFile>();
-            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
-            //TODO: Use path speciefied in settings to find new .dat files:
-            //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the excel file.
-            String[] filePaths = Directory.GetFiles(pickUpLocation);
-            ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
-            int count = 0;
-            
-            foreach(String fileLoc in filePaths)
-            {
-                ClassDataFile file = new ClassDataFile(fileLoc);
-                infoTable.AddNewRow(file, ref infoTable);
-                datFiles[count] = new ClassDataFile(filePaths[count]);
-                myList.Add(datFiles[count]);
-                count++;
-            }
-
-            //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            //ClassExcelTools excelObj = new ClassExcelTools();
-            //string message = excelObj.SaveTableToExcel(infoTable, pickUpLocation, fileName);
-            //string testMessage = excelObj.ReadTableFromExcel(pickUpLocation + fileName);
-            return myList;
-        }
-        
-        internal static List<ClassDataFile> WriteNewFilesToCSV(string fileName, string pickUpLocation)
-        {
-            var myList = new List<ClassDataFile>();
-            ClassImportInfoDataTable infoTable = new ClassImportInfoDataTable();
-            //TODO: Use path speciefied in settings to find new .dat files:
-            //1.Call latestExistingFile method to find out latest name in db.
-            //2.Cycle through files in directory, and write the file info to a datatable, wich is then handed to the csv file.
+            List<ClassDataFile> fileList = new List<ClassDataFile>();
             String[] filePaths = Directory.GetFiles(pickUpLocation);
             ClassDataFile[] datFiles = new ClassDataFile[filePaths.Count()];
             int count = 0;
 
-            foreach (String fileLoc in filePaths)
+            if (useAuditFile)
             {
-                ClassDataFile file = new ClassDataFile(fileLoc);
-                infoTable.AddNewRow(file, ref infoTable);
-                datFiles[count] = new ClassDataFile(filePaths[count]);
-                myList.Add(datFiles[count]);
-                count++;
+                string auditFileLocation = Properties.Settings.Default.AuditFileLocation;
+                ClassAuditFile auditFile = new ClassAuditFile(auditFileLocation);
+                DataTables.ClassAuditEntriesDataTable auditEntriesTable = new DataTables.ClassAuditEntriesDataTable();
+                auditEntriesTable = DataTables.ClassAuditEntriesDataTable.FillEntriesTable(auditFile);
+
+                if (auditEntriesTable.entriesTable.Rows.Count >= 1)
+                {
+                    foreach (String fileLoc in filePaths)
+                    {
+                        datFiles[count] = new ClassDataFile(filePaths[count]);
+                        infoTable.AddNewRow(datFiles[count], ref infoTable);
+                        string message = string.Empty;
+
+                        message = ClassAuditing.SelfCheck(datFiles[count]);
+                        infoTable.UpdateRow(datFiles[count], "Self_Check_Result", message, ref infoTable);
+
+                        message = ClassAuditing.AuditFileCheck(datFiles[count], auditEntriesTable);
+                        infoTable.UpdateRow(datFiles[count], "AuditFile_Check_Result", message, ref infoTable);
+
+                        //• ONLY ADD FILE TO LIST IF AUDIT PASSED
+                        if ((datFiles[count].PassedSelfCheck == true) && (datFiles[count].PassedAuditFileCheck == true))
+                            fileList.Add(datFiles[count]);
+
+                        count++;
+                    }
+
+                }
             }
+            else
+            {
+                foreach (String fileLoc in filePaths)
+                {
+                    datFiles[count] = new ClassDataFile(filePaths[count]);
+                    infoTable.AddNewRow(datFiles[count], ref infoTable);
+                    string message = string.Empty;
 
-            //Now that we have a datatable we can use the Exceltools class to write to new worksheet:
-            //ClassCSVTools CSVObj = new ClassCSVTools();
-            //string message = CSVObj.SaveTableToCSV(infoTable, pickUpLocation, fileName);
+                    message = ClassAuditing.SelfCheck(datFiles[count]);
+                    infoTable.UpdateRow(datFiles[count], "Self_Check_Result", message, ref infoTable);
 
-            return myList;
+                    //• ONLY ADD FILE TO LIST IF AUDIT PASSED
+                    if (datFiles[count].PassedSelfCheck == true)
+                        fileList.Add(datFiles[count]);
+
+                    count++;
+                }
+            }
+            return fileList;
+        }
+
+        #endregion
+
+        #region Private methods
+        private string LatestExistingFile()
+        {
+
+            string previousFileName = string.Empty;
+            //TODO: Locate the latest file name from Database
+            return previousFileName;
+        }
+
+        public static string VerifyFileIntact(ClassDataFile datFile, ClassAuditEntriesDataTable auditEntries = null)
+        {
+            string message = "Not successful. No Audit entry found for this file";
+
+            //• Audit Type depends on if the auditEntries table has been supplied or not
+            if (auditEntries == null)
+            {
+                if (datFile.AmountOfLines == datFile.IntendedAmountOfLines)
+                    message = "Self Check Successful";
+                else
+                    message = "Self Check Not Successful. File is not complete:CDR MISMATCH";
+            }
+            else
+            {
+                foreach (DataRow dr in auditEntries.entriesTable.Rows)
+                {
+                    if (dr["FileName"].ToString() == datFile.FileName.Substring(0, 8))
+                    {
+                        if (Convert.ToInt16(dr["CDR_Count"]) == datFile.AmountOfLines)
+                        {
+                            message = "AuditFile Check Successful";
+                            break;
+                        }
+                        else
+                        {
+                            message = "AuditFile Check Not Successful. File is not complete:CDR MISMATCH";
+                            break;
+                        }
+                    }
+                }
+            }
+            return message;
         }
         #endregion
     }

@@ -24,9 +24,13 @@ namespace Shampoo_Meter
             txtSSISConnectionString.Text = Properties.Settings.Default.SSISConnectionString;
             txtSSISTemplateLocation.Text = Properties.Settings.Default.SSISTemplateLocation;
             txtConnectionString.Text = Properties.Settings.Default.ConnectionString;
-            string fileExtention = Properties.Settings.Default.LogFileExt;
 
-            switch(fileExtention)
+            cmbAuditType.SelectedIndex = cmbAuditType.Items.IndexOf(Properties.Settings.Default.AuditType);
+            
+            txtAuditFileLocation.Text = Properties.Settings.Default.AuditFileLocation;
+            txtLogFileLocation.Text = Properties.Settings.Default.LogFileDir;
+
+            switch (Properties.Settings.Default.LogFileExt)
             {
                 case ".csv":
                     radCsv.Checked = true;
@@ -58,6 +62,20 @@ namespace Shampoo_Meter
             txtSSISTemplateLocation.Text = dlgFileLocationBrowser.FileName.ToString();
         }
 
+        private void btnLocateAuditFile_Click(object sender, EventArgs e)
+        {
+            dlgFileLocationBrowser.ShowDialog();
+            Properties.Settings.Default.AuditFileLocation = dlgFileLocationBrowser.FileName.ToString();
+            txtAuditFileLocation.Text = dlgFileLocationBrowser.FileName.ToString();
+        }
+
+        private void btnLocateLogFileDir_Click(object sender, EventArgs e)
+        {
+            dlgFolderLocationBrowser.ShowDialog();
+            Properties.Settings.Default.LogFileDir = dlgFolderLocationBrowser.SelectedPath.ToString();
+            txtLogFileLocation.Text = dlgFolderLocationBrowser.SelectedPath.ToString();
+        }
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.FileLocation = txtFileLocation.Text;
@@ -65,9 +83,19 @@ namespace Shampoo_Meter
             Properties.Settings.Default.SSISConnectionString = txtSSISConnectionString.Text;
             Properties.Settings.Default.SSISTemplateLocation = txtSSISTemplateLocation.Text; 
             Properties.Settings.Default.ConnectionString = txtConnectionString.Text;
+
+            Properties.Settings.Default.AuditType = cmbAuditType.SelectedItem.ToString();
+            Properties.Settings.Default.AuditFileLocation = txtAuditFileLocation.Text;
+            Properties.Settings.Default.LogFileDir = txtLogFileLocation.Text;
             Properties.Settings.Default.LogFileExt = (radCsv.Checked == true) ? ".csv" : ".xlsx";
             Properties.Settings.Default.Save();
             Close();
+        }
+
+        private void cmbAuditType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtAuditFileLocation.Enabled = (cmbAuditType.SelectedIndex != cmbAuditType.Items.IndexOf("Self Check Only")) ? true : false;
+            lblAuditFIleLocation.Enabled = (cmbAuditType.SelectedIndex != cmbAuditType.Items.IndexOf("Self Check Only")) ? true : false;
         }
     }
 }

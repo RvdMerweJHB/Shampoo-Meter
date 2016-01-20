@@ -43,6 +43,21 @@ namespace Shampoo_Meter.DAL
             return resultTable;
         }
 
+        public static int GetFileStatus(string connectionString)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+            sqlCommand.CommandText = BuildUpdateFileStatusQuery();
+            sqlConnection.Open();
+            var count = sqlCommand.ExecuteScalar();
+            sqlConnection.Close();
+
+            return Convert.ToInt16(count);
+        }
+
         public static bool UpdateDataFile(string tableName, string connectionString)
         {
             SqlConnection sqlConnection = new SqlConnection();
@@ -77,6 +92,45 @@ namespace Shampoo_Meter.DAL
             return count;
         }
 
+        public static DataTable SelectInCompletesAudits(string connectionString, DataTables.ClassAuditEntriesDataTable entriesTable)
+        {
+            DataTable _resultTable = new DataTable();
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+            
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+
+            sqlCommand.CommandText = BuildSelectInCompleteAuditsQuery(entriesTable);
+            sqlConnection.Open();
+            using (SqlDataAdapter sqlAdaptor = new SqlDataAdapter(sqlCommand.CommandText, sqlConnection))
+            {
+                sqlAdaptor.Fill(_resultTable);
+            }
+            sqlConnection.Close();
+
+            return _resultTable;
+        }
+
+        public static bool UpdateIncompleteAudit(ClassDataFile datFile, string connectionString)
+        {
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+
+            sqlConnection.ConnectionString = connectionString;
+            sqlCommand.Connection = sqlConnection;
+
+            sqlCommand.CommandText = BuildUpdateInCompleteAuditsQuery(datFile);
+            sqlConnection.Open();
+            int count = sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+
+            bool _result = (count >= 1) ? true : false;
+
+            return _result;
+
+        }
+
         public static DataTable InsertNewFileId(ClassDataFile[] dataFiles, string connectionString)
         {
             DataTable pTable = new DataTable();
@@ -92,16 +146,14 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("USE [APN_DATA]");
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("INSERT INTO ");
-            sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded)");
+            sqlQuery.AppendLine("	MTN_APN_Data_File(File_Name,Date_Uploaded,Actual_CDR_Amount, Self_Check_CDR_Amount)");
             sqlQuery.AppendLine("   VALUES");
 
             foreach (ClassDataFile newDataFile in dataFiles)
             {
-                sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()),");
+                sqlQuery.AppendLine("('" + newDataFile.FileName + "',GETDATE()," + newDataFile.AmountOfLines.ToString() + "," + newDataFile.IntendedAmountOfLines.ToString() + "),");
                 if (fileCount == (dataFiles.Count()))
-                {
                     sqlQuery = sqlQuery.Remove(sqlQuery.Length - 3, 1);
-                }
                 else
                     fileCount++;
             }
@@ -109,7 +161,9 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("");
             sqlQuery.AppendLine("SELECT TOP " + fileCount + "");
             sqlQuery.AppendLine("	[ID],");
-            sqlQuery.AppendLine("	[FILE_NAME]");
+            sqlQuery.AppendLine("	[FILE_NAME],");
+            sqlQuery.AppendLine("   [Actual_CDR_Amount],");
+            sqlQuery.AppendLine("   [Self_Check_CDR_Amount]");
             sqlQuery.AppendLine("FROM");
             sqlQuery.AppendLine("	MTN_APN_Data_File");
             sqlQuery.AppendLine("ORDER BY");
@@ -266,6 +320,55 @@ namespace Shampoo_Meter.DAL
             return sqlQuery.ToString();
         }
 
+        private static string BuildSelectInCompleteAuditsQuery(DataTables.ClassAuditEntriesDataTable entriesTable)
+        {
+            StringBuilder sqlQuery = new StringBuilder();
+            int entriesCount = 1;
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("SELECT ");
+            sqlQuery.AppendLine("	   [ID],");
+            sqlQuery.AppendLine("      [File_Name],");
+            sqlQuery.AppendLine("      [Date_Uploaded],");
+            sqlQuery.AppendLine("      [Date_Completed],");
+            sqlQuery.AppendLine("      [Actual_CDR_Amount],");
+            sqlQuery.AppendLine("      [Self_Check_CDR_Amount]");
+            sqlQuery.AppendLine("FROM");
+            sqlQuery.AppendLine("	[dbo].[MTN_APN_Data_File]");
+            sqlQuery.AppendLine("WHERE");
+            sqlQuery.AppendLine("	Audit_File_CDR_Amount IS NULL");
+            sqlQuery.AppendLine("	AND [File_Name] IN");
+            sqlQuery.AppendLine("	(");
+
+            foreach (DataRow dr in entriesTable.entriesTable.Rows)
+            {
+                sqlQuery.AppendLine("   '" + dr["FileName"] + "' + '.dat',");
+                if (entriesCount == entriesTable.entriesTable.Rows.Count)
+                {
+                    sqlQuery = sqlQuery.Remove(sqlQuery.Length - 3, 1);
+                }
+                else
+                    entriesCount++;
+            }
+
+            sqlQuery.AppendLine("	)");
+            return sqlQuery.ToString();
+        }
+
+        private static string BuildUpdateInCompleteAuditsQuery(ClassDataFile datFile)
+        {
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("UPDATE [MTN_APN_Data_File]");
+            sqlQuery.AppendLine("SET Audit_File_CDR_Amount = " + datFile.AuditFileEntryAmount.ToString());
+            sqlQuery.AppendLine("WHERE");
+            sqlQuery.AppendLine("   ID =" + datFile.MTN_APN_Data_File_ID.ToString());
+
+            return sqlQuery.ToString();
+        }
+
         private static string BuildUpdateDataFileQuery(string fileId)
         {
             StringBuilder sqlQuery = new StringBuilder();
@@ -301,6 +404,22 @@ namespace Shampoo_Meter.DAL
             sqlQuery.AppendLine("	AND AD.Data_File_ID BETWEEN " + beginFileId.ToString() + " AND " + endFileId.ToString() + "");
             sqlQuery.AppendLine("ORDER BY");
             sqlQuery.AppendLine("   '20' + SUBSTRING(AD.Call_Date, 5, 6) + '-' + SUBSTRING(AD.Call_Date, 3, 2) + '-' + SUBSTRING(AD.Call_Date, 1, 2) + ' ' + SUBSTRING(AD.Call_Time, 1, 2) + ':' + SUBSTRING(AD.Call_Time, 3, 2) + ':' + SUBSTRING(AD.Call_Time, 5, 2)");
+
+            return sqlQuery.ToString();
+        }
+
+        private static string BuildUpdateFileStatusQuery()
+        {
+            StringBuilder sqlQuery = new StringBuilder();
+
+            sqlQuery.AppendLine("USE [APN_DATA]");
+            sqlQuery.AppendLine("");
+            sqlQuery.AppendLine("SELECT");
+            sqlQuery.AppendLine("	COUNT(*)");
+            sqlQuery.AppendLine("FROM ");
+            sqlQuery.AppendLine("	[APN_DATA].[dbo].[MTN_APN_Data_File]");
+            sqlQuery.AppendLine("WHERE");
+            sqlQuery.AppendLine("	Audit_File_CDR_Amount is NULL");
 
             return sqlQuery.ToString();
         }

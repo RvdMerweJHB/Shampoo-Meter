@@ -42,14 +42,14 @@ namespace Shampoo_Meter.Classes
             return "read";
         }
 
-        public string SaveTableToCSV(ClassImportInfoDataTable infoTable, string csvFilePath, string fileName)
+        public static void SaveTableToCSV(ClassImportInfoDataTable infoTable, string csvFilePath, string fileName)
         {
             int columns = infoTable.infoTable.Columns.Count;
             int rows = infoTable.infoTable.Rows.Count;
 
             try
             {
-                StreamWriter sw = new StreamWriter(csvFilePath + fileName, false);
+                StreamWriter sw = new StreamWriter(csvFilePath + "\\" + fileName, false);
 
                 for (int i = 0; i < columns; i++)
                 {
@@ -87,8 +87,6 @@ namespace Shampoo_Meter.Classes
             {
                 throw ex;
             }
-
-            return "Saved";
         }
     }
 }

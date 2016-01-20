@@ -106,5 +106,41 @@ namespace Shampoo_Meter.Properties {
                 this["LogFileExt"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LogFileDir {
+            get {
+                return ((string)(this["LogFileDir"]));
+            }
+            set {
+                this["LogFileDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AuditFileLocation {
+            get {
+                return ((string)(this["AuditFileLocation"]));
+            }
+            set {
+                this["AuditFileLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AuditType {
+            get {
+                return ((string)(this["AuditType"]));
+            }
+            set {
+                this["AuditType"] = value;
+            }
+        }
     }
 }

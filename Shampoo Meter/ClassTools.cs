@@ -56,6 +56,7 @@ namespace Shampoo_Meter
                     File.Copy(file.Location, outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName);
                     file.NewLocation = outputLoaction + "\\" + file.MonthName + " " + yearNumber + "\\" + file.Day + "\\" + file.FileName;
                 }
+                File.Delete(file.Location);
             }
         }
         #endregion

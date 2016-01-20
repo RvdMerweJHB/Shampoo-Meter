@@ -23,5 +23,14 @@
     <Setting Name="LogFileExt" Type="System.String" Scope="User">
       <Value Profile="(Default)">.csv</Value>
     </Setting>
+    <Setting Name="LogFileDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AuditFileLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AuditType" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
